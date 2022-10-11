@@ -17,8 +17,8 @@ spec:
       # Name of the Service Account bound to a Cluster Role with the required
       # permissions
       containers:
-        - name: redhat
-          image: quay.io/f5networks/k8s-bigip-ctlr-devel:b267595735e66f845f16cffb802d9033c2836034
+        - name: cntr-ingress-svcs
+          image: registry.connect.redhat.com/f5networks/cntr-ingress-svcs:latest
           env:
             - name: BIGIP_USERNAME
               valueFrom:
@@ -44,9 +44,7 @@ spec:
               "--bigip-url=10.192.125.60",
               "--bigip-partition=OpenShift",
               "--namespace=cafe",
-              "--namespace=cafenew",
               "--pool-member-type=cluster",
-              "--openshift-sdn-name=/Common/openshift_vxlan",
               "--log-level=DEBUG",
               "--insecure=true",
               "--route-spec-configmap=kube-system/global-cm",

@@ -2,4 +2,4 @@
 
 * [OpenShift Routes verse Custom Resource Definitions](https://github.com/mdditt2000/openshift-4-9/tree/main/route-vs-crd#readme)
 * [Next Generation OpenShift Routes](https://github.com/mdditt2000/openshift-4-9/tree/main/next-gen-routes#readme)
-* [Advanced OpenShift Routing for OVN-Kubernetes](Coming)
+* [Advanced OpenShift Routing with OVN-Kubernetes](Coming)

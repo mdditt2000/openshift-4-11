@@ -60,9 +60,25 @@ View static routes created on BIG-IP
 
 ![routes](https://github.com/mdditt2000/openshift-4-11/blob/main/ovn-kubernetes/diagram/2022-10-12_13-30-34.png)
 
+### Step 4: Configure BIG-IP Routes
+
+Configure egress from OpenShift cluster to BIG-IP using k8s.ovn.org/routing-external-gws annotation on namespace where the application is deployed as shown in the diagram above
+
+```
+apiVersion: v1
+kind: Namespace
+metadata:
+  annotations:
+    k8s.ovn.org/routing-external-gws: 10.192.125.60 ##BIG-IP interface address rotatable to the OpenShift nodes
+  labels:
+    kubernetes.io/metadata.name: default
+  name: cafe
+```
+![gateway](https://github.com/mdditt2000/openshift-4-11/blob/main/ovn-kubernetes/demo-app/cafe/name-cafe.yaml)
+
 **Setup complete!** Deploy CIS and create OpenShift Routes
 
-### Step 4: Deploy CIS
+### Step 5: Deploy CIS
 
 F5 Controller Ingress Services (CIS) called **Next Generation Routes Controller**. Next Generation Routes Controller extended F5 CIS to use multiple Virtual IP addresses. Before F5 CIS could only manage one Virtual IP address per CIS instance.
 
@@ -102,7 +118,7 @@ oc create -f f5-bigip-ctlr-deployment.yaml
 
 CIS [repo](https://github.com/mdditt2000/openshift-4-11/tree/main/ovn-kubernetes/next-gen-route/cis)
 
-### Step 5: Deploy Global ConfigMap
+### Step 6: Deploy Global ConfigMap
 
 Using Global ConfigMap
 

@@ -74,7 +74,7 @@ metadata:
     kubernetes.io/metadata.name: default
   name: cafe
 ```
-![gateway](https://github.com/mdditt2000/openshift-4-11/blob/main/ovn-kubernetes/demo-app/cafe/name-cafe.yaml)
+routing-external-gws [repo](https://github.com/mdditt2000/openshift-4-11/blob/main/ovn-kubernetes/demo-app/cafe/name-cafe.yaml)
 
 **Setup complete!** Deploy CIS and create OpenShift Routes
 

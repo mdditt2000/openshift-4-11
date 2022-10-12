@@ -1,10 +1,10 @@
-apiVersion: route.openshift.io/v1
 kind: Route
+apiVersion: route.openshift.io/v1
 metadata:
+  namespace: cafe
   labels:
     f5tnr: "true"
-    name: cafe-tea
-  namespace: cafe
+  name: cafe-tea
 spec:
   host: cafe.example.com
   path: "/tea"

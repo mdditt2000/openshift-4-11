@@ -15,7 +15,6 @@ Deploy OpenShift Cluster with **networktype** as OVNKubernetes. Change the defau
 ### Step 2: Verify gateway mode set to shared
 
 ```
-```
 # oc get nodes
 NAME                        STATUS   ROLES    AGE   VERSION
 ocp-pm-trw88-master-0       Ready    master   68m   v1.24.0+3882f8f

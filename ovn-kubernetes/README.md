@@ -152,16 +152,16 @@ Routes [repo](https://github.com/mdditt2000/openshift-4-11/tree/main/ovn-kuberne
 
 Validate OpenShift Routes using the BIG-IP
 
-![big-ip route](https://github.com/mdditt2000/openshift-4-9/blob/main/next-gen-routes/diagram/2022-06-07_15-35-21.png)
+![big-ip route](https://github.com/mdditt2000/openshift-4-11/blob/main/ovn-kubernetes/diagram/2022-06-07_15-35-21.png)
 
 Validate OpenShift Virtual IP using the BIG-IP
 
-![big-ip pools](https://github.com/mdditt2000/openshift-4-9/blob/main/next-gen-routes/diagram/2022-06-07_15-37-33.png)
+![big-ip pools](https://github.com/mdditt2000/openshift-4-11/blob/main/ovn-kubernetes/diagram/2022-06-07_15-37-33.png)
 
 Validate OpenShift Routes policies on the BIG-IP
 
-![traffic](https://github.com/mdditt2000/openshift-4-9/blob/main/next-gen-routes/diagram/2022-06-07_15-38-08.png)
+![traffic](https://github.com/mdditt2000/openshift-4-11/blob/main/ovn-kubernetes/diagram/2022-06-07_15-38-08.png)
 
 Validate OpenShift Routes policies by connecting to the Public IP
 
-![traffic](https://github.com/mdditt2000/openshift-4-9/blob/main/next-gen-routes/diagram/2022-06-07_15-38-33.png)
+![traffic](https://github.com/mdditt2000/openshift-4-11/blob/main/ovn-kubernetes/diagram/2022-10-12_13-46-30.png)

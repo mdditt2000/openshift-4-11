@@ -3,7 +3,7 @@ apiVersion: route.openshift.io/v1
 metadata:
   namespace: cafe
   labels:
-    f5tnr: "true"
+    f5nr: "true"
   name: cafe-mocha
 spec:
   host: cafe.example.com

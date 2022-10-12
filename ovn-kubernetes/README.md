@@ -6,10 +6,15 @@ This document demonstrates how to use **OVN-Kubernetes with F5 BIG-IP Routes** t
 
 Demo on YouTube [video]()
 
-### OpenShift Nodes
+## Prerequisite
 
-Capturing the OpenShift nodes is important as BIG-IP routes will need to be created for each OpenSift node to forward traffic
+### Step 1: Deploy OpenShift using OVNKubernetes
 
+Deploy OpenShift Cluster with **networktype** as OVNKubernetes. Change the default to OVNKubernetes in the install-config.yaml before creating the cluster
+
+### Step 2: Verify gateway mode set to shared
+
+```
 ```
 # oc get nodes
 NAME                        STATUS   ROLES    AGE   VERSION
@@ -20,6 +25,16 @@ ocp-pm-trw88-worker-d6zsg   Ready    worker   50m   v1.24.0+3882f8f
 ocp-pm-trw88-worker-k7lsd   Ready    worker   55m   v1.24.0+3882f8f
 ocp-pm-trw88-worker-vdtmb   Ready    worker   55m   v1.24.0+3882f8f
 ```
+
+```
+# oc logs -f ovnkube-node-2bcx7 ovnkube-node -n openshift-ovn-kubernetes|grep "gateway_mode_flags"
++ gateway_mode_flags='--gateway-mode shared --gateway-interface br-ex'
+```
+
+### OpenShift Nodes
+
+Capturing the OpenShift nodes is important as BIG-IP routes will need to be created for each OpenSift node to forward traffic
+
 
 
 

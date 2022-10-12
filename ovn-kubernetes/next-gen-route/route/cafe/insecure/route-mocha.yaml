@@ -3,13 +3,13 @@ kind: Route
 metadata:
   labels:
     f5tnr: "true"
-  name: cafe-coffee
+    name: cafe-mocha
   namespace: cafe
 spec:
   host: cafe.example.com
-  path: "/coffee"
+  path: "/mocha"
   port:
     targetPort: 8080
   to:
     kind: Service
-    name: coffee-svc
+    name: mocha-svc

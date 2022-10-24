@@ -1,14 +1,14 @@
-# Simplifying Kubernetes Ingress using F5 Technologies
+# Easy F5/NGINX Integrating using OpenShift 4.11
 
-The purpose of this document is to demonstrate Kubernetes Ingress using F5 BIG-IP and NGINX technologies. This user-guide simplifies the solution by providing examples and step by step guidance. 
+The purpose of this document is to demonstrate how easy integration F5 BIG-IP and NGINX technologies using OpenShift 4.11. This guide simplifies the solution by providing examples and step by step guidance using Operators and OVN-Kubernetes
 
-F5 Ingress solution provides you with modern, container application workloads that use both BIG-IP Container Ingress Services and NGINX Ingress Controller for Kubernetes. It’s an elegant control plane solution that offers a unified method of working with both technologies from a single interface—offering the best of BIG-IP and NGINX and fostering better collaboration across NetOps and DevOps teams. The diagram below demonstrates this use-case.
+F5 BIG-IP and NGINX provides a solutions called **IngressLink** that use both BIG-IP Container Ingress Services (CIS) and NGINX Ingress Controller deployed in OpenShift 4.11 using the operators. It’s an elegant control plane solution that offers a unified method of working with both technologies from a single interface—offering the best of BIG-IP and NGINX and fostering better collaboration across NetOps and DevOps teams. The diagram below demonstrates this use-case.
 
 This architecture diagram demonstrates the simplified Kubernetes Ingress solution
 
-![architecture](https://github.com/mdditt2000/k8s-bigip-ctlr/blob/main/user_guides/simplifying-ingress/diagram/2021-10-15_14-05-41.png)
+![architecture]()
 
-Demo on YouTube [video](https://www.youtube.com/watch?v=wEOcAPQY104)
+Demo on YouTube [video]()
 
 On this page you’ll find:
 
@@ -16,20 +16,24 @@ On this page you’ll find:
 * Documentation for the solution(s)
 * A step by step configuration and deployment guide
 
-## Configure F5 BIG-IP
+## Configure F5 BIG-IP HA
+This document demonstrates **High Availability (HA) BIG-IP's working with OVN-Kubernetes**. Using OVN-Kubernetes with F5 BIG-IP Routes removes the complexity of creating VXLAN tunnels or using Calico
 
 **Step 1:**
 
-### Install the CIS Controller 
+### Install the CIS Controllers using the Operator
 
-Add BIG-IP credentials as Kubernetes Secrets and create the service account required for deploying CIS
+### Prerequisites
 
-    kubectl create secret generic bigip-login -n kube-system --from-literal=username=admin --from-literal=password=<password>
-    kubectl create serviceaccount bigip-ctlr -n kube-system
-    kubectl create clusterrolebinding k8s-bigip-ctlr-clusteradmin --clusterrole=cluster-admin --serviceaccount=kube-system:k8s-bigip-ctlr
-    kubectl create -f bigip-ctlr-clusterrole.yaml
+Create BIG-IP login credentials for use with Operator Helm charts
 
-cis-deployment [repo](https://github.com/mdditt2000/k8s-bigip-ctlr/tree/main/user_guides/simplifying-ingress/cis/cis-deployment)
+    oc create secret generic bigip-login  -n kube-system --from-literal=username=admin  --from-literal=password=<secret>
+
+### Step 1
+
+Locate the F5 Container Ingress Services Operator in OpenShift OperatorHub as shown in the diagram below
+
+![diagram]()
     
 ### Create CIS CRD schema
 

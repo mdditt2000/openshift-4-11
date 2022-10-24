@@ -71,8 +71,9 @@ Enter requirement objects in the YAML View. Please add the recommended setting b
 * Remove **agent as3** as this is default
 * Change repo image to **f5networks/cntr-ingress-svcs**. By default OpenShift will pull the image from Docker. 
 * Change the user to **registry.connect.redhat.com** so OpenShift will be pull the published image from the RedHat Ecosystem Catalog [repo](https://catalog.redhat.com/software/containers/f5networks/cntr-ingress-svcs/5ec7ad05ecb5246c0903f4cf)
+* Change **custom-resource-mode: true** for **IngressLink**
 
-### BIG-IP 01
+### f5-server-01
 
 ```
 apiVersion: cis.f5.com/v1
@@ -116,7 +117,7 @@ Create the second instance for **f5-server-02**
 
 ![diagram](https://github.com/mdditt2000/openshift-4-11/blob/main/ingresslink-on-openshift/diagram/2022-10-24_14-37-23.png)
 
-### BIG-IP 02
+### f5-server-02
 
 ```
 apiVersion: cis.f5.com/v1
@@ -152,7 +153,7 @@ spec:
   bigip_login_secret: bigip-login
 ```
 
-View two instances of CIS created
+Verify that **f5-server-01** and **f5-server-02** are created
 
 ![diagram](https://github.com/mdditt2000/openshift-4-11/blob/main/ingresslink-on-openshift/diagram/2022-10-24_14-38-43.png)
 

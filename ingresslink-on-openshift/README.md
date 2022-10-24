@@ -72,41 +72,85 @@ Enter requirement objects in the YAML View. Please add the recommended setting b
 * Change repo image to **f5networks/cntr-ingress-svcs**. By default OpenShift will pull the image from Docker. 
 * Change the user to **registry.connect.redhat.com** so OpenShift will be pull the published image from the RedHat Ecosystem Catalog [repo](https://catalog.redhat.com/software/containers/f5networks/cntr-ingress-svcs/5ec7ad05ecb5246c0903f4cf)
 
+### BIG-IP 01
 
 ```
 apiVersion: cis.f5.com/v1
 kind: F5BigIpCtlr
 metadata:
-  name: f5-server
+  name: f5-server-01
   namespace: openshift-operators
 spec:
-  args:
-    log_as3_response: true
-    manage_routes: true
-    log_level: DEBUG
-    route_vserver_addr: 10.192.75.109
-    bigip_partition: OpenShift
-    openshift_sdn_name: /Common/openshift_vxlan
-    bigip_url: 10.192.75.60
-    insecure: true
-    pool-member-type: cluster
-  bigip_login_secret: bigip-login
+  ingressClass:
+    create: false
+    ingressClassName: f5
+    defaultController: false
+  resources: {}
+  rbac:
+    create: true
+  version: latest
+  serviceAccount:
+    create: true
   image:
     pullPolicy: Always
     repo: f5networks/cntr-ingress-svcs
     user: registry.connect.redhat.com
   namespace: kube-system
-  rbac:
-    create: true
-  resources: {}
-  serviceAccount:
-    create: true
-  version: latest
+  args:
+    log-as3-response: true
+    custom-resource-mode: true
+    log-level: DEBUG
+    bigip-partition: OpenShift
+    bigip-url: 10.192.75.60
+    insecure: true
+    pool-member-type: cluster
+    namespace: nginx-ingress
+  bigip_login_secret: bigip-login
 ```
 
 Select the Create tab
 
-![diagram](https://github.com/mdditt2000/k8s-bigip-ctlr/blob/main/user_guides/operator/diagrams/2021-06-14_14-38-24.png)
+![diagram](https://github.com/mdditt2000/openshift-4-11/blob/main/ingresslink-on-openshift/diagram/2022-10-24_14-36-33.png)
+
+Create the second instance for **f5-server-02**
+
+![diagram](https://github.com/mdditt2000/openshift-4-11/blob/main/ingresslink-on-openshift/diagram/2022-10-24_14-36-33.png)
+
+### BIG-IP 02
+
+```
+apiVersion: cis.f5.com/v1
+kind: F5BigIpCtlr
+metadata:
+  name: f5-server-02
+  namespace: openshift-operators
+spec:
+  ingressClass:
+    create: false
+    ingressClassName: f5
+    defaultController: false
+  resources: {}
+  rbac:
+    create: true
+  version: latest
+  serviceAccount:
+    create: true
+  image:
+    pullPolicy: Always
+    repo: f5networks/cntr-ingress-svcs
+    user: registry.connect.redhat.com
+  namespace: kube-system
+  args:
+    log-as3-response: true
+    custom-resource-mode: true
+    log-level: DEBUG
+    bigip-partition: OpenShift
+    bigip-url: 10.192.75.61
+    insecure: true
+    pool-member-type: cluster
+    namespace: nginx-ingress
+  bigip_login_secret: bigip-login
+```
 
 ### Step 6
 

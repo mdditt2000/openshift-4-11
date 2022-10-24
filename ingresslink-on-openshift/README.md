@@ -62,7 +62,7 @@ Now that the operator is installed you can create an **two instance of CIS**. Th
 
 Note that currently some fields may not be represented in form so its best to use the "YAML View" for full control of object creation. Select the "YAML View"
 
-![diagram](hhttps://github.com/mdditt2000/openshift-4-11/blob/main/ingresslink-on-openshift/diagram/2022-10-24_14-24-00.png)
+![diagram](https://github.com/mdditt2000/openshift-4-11/blob/main/ingresslink-on-openshift/diagram/2022-10-24_14-24-00.png)
 
 ### Step 5
 

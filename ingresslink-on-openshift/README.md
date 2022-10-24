@@ -16,8 +16,6 @@ On this page you’ll find:
 ## Configure F5 BIG-IP HA
 This document demonstrates **High Availability (HA) F5 BIG-IP's working with OVN-Kubernetes**. Using OVN-Kubernetes with F5 BIG-IP and static routes removes the complexity of creating VXLAN tunnels or using Calico
 
-**Step 1:**
-
 ### Step 1: Deploy OpenShift using OVNKubernetes
 
 Deploy OpenShift Cluster with **networktype** as **OVNKubernetes**. Change the default to **OVNKubernetes** in the install-config.yaml before creating the cluster
@@ -86,7 +84,7 @@ metadata:
     k8s.ovn.org/routing-external-gws: 10.192.125.62 ##BIG-IP floating self-interface address rotatable to the OpenShift nodes
   labels:
     kubernetes.io/metadata.name: default
-  name: cafe
+  name: nginx-ingress
 ```
 routing-external-gws [repo](https://github.com/mdditt2000/k8s-bigip-ctlr/blob/main/user_guides/ovn-kubernetes-ha/demo-app/cafe/name-cafe.yaml)
 
@@ -163,3 +161,36 @@ k8s-bigip-ctlr-01-deployment-7cc8b7cf94-2csz7   1/1     Running   0          16s
 k8s-bigip-ctlr-02-deployment-5c8d8c4676-hjwpr   1/1     Running   0          16s
 ```
 
+## Deploy NGINX Ingress Operator on OpenShift
+
+Recommend following [NGINX blog](https://www.nginx.com/blog/getting-started-nginx-ingress-operator-red-hat-openshift/)
+
+nginx-config [repo](https://github.com/mdditt2000/k8s-bigip-ctlr/tree/main/user_guides/multi-deployment-nginx/ocp/nginx-config)
+
+### Step 1: Validate NGINX Ingress Operator on OpenShift
+
+![operator](https://github.com/mdditt2000/k8s-bigip-ctlr/blob/main/user_guides/multi-deployment-nginx/diagram/2022-03-02_14-33-05.png)
+
+```
+# oc get deployment -n nginx-ingress
+NAME                                        READY   UP-TO-DATE   AVAILABLE   AGE
+nginx-ingress-controller                    1/1     1            1           5d19h
+nginx-ingress-operator-controller-manager   1/1     1            1           5d19h
+[root@ocp-installer secure]# kubectl -n nginx-ingress  get all
+NAME                                                            READY   STATUS    RESTARTS        AGE
+pod/nginx-ingress-controller-66b4c4f7-smk8h                     1/1     Running   0               5d19h
+pod/nginx-ingress-operator-controller-manager-c4fbbcb9f-xkvds   2/2     Running   1 (2d12h ago)   5d19h
+
+NAME                                                                TYPE        CLUSTER-IP       EXTERNAL-IP   PORT(S)                      AGE
+service/nginx-ingress-controller                                    NodePort    172.30.175.208   <none>        80:30046/TCP,443:32028/TCP   5d19h
+service/nginx-ingress-operator-controller-manager-metrics-service   ClusterIP   172.30.0.114     <none>        8443/TCP                     5d19h
+
+NAME                                                        READY   UP-TO-DATE   AVAILABLE   AGE
+deployment.apps/nginx-ingress-controller                    1/1     1            1           5d19h
+deployment.apps/nginx-ingress-operator-controller-manager   1/1     1            1           5d19h
+
+NAME                                                                  DESIRED   CURRENT   READY   AGE
+replicaset.apps/nginx-ingress-controller-66b4c4f7                     1         1         1       5d19h
+replicaset.apps/nginx-ingress-operator-controller-manager-c4fbbcb9f   1         1         1       5d19h
+
+```

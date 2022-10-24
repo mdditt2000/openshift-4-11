@@ -149,6 +149,7 @@ oc create secret generic bigip-login -n kube-system --from-literal=username=admi
 oc create -f bigip-ctlr-clusterrole.yaml
 oc create -f f5-bigip-ctlr-01-deployment.yaml
 oc create -f f5-bigip-ctlr-02-deployment.yaml
+oc create -f CustomResourceDefinition.yaml
 ```
 
 CIS [repo](https://github.com/mdditt2000/k8s-bigip-ctlr/tree/main/user_guides/ovn-kubernetes-ha/next-gen-route/cis)

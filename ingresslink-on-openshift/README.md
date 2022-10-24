@@ -56,7 +56,7 @@ Once installed select the View Operator tab
 
 ### Step 4
 
-Now that the operator is installed you can create an **two instance of CIS**. This will also deploy CIS in OpenShift
+Create **two instance of CIS**. This will also deploy CIS in OpenShift
 
 ![diagram](https://github.com/mdditt2000/openshift-4-11/blob/main/ingresslink-on-openshift/diagram/2022-10-24_14-07-32.png)
 

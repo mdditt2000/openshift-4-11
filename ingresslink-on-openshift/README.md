@@ -1,10 +1,8 @@
 # Easy F5/NGINX Integrating using OpenShift 4.11
 
-The purpose of this document is to demonstrate how easy integration F5 BIG-IP and NGINX technologies using OpenShift 4.11. This guide simplifies the solution by providing examples and step by step guidance using Operators and OVN-Kubernetes
+The purpose of this document is to demonstrate how easy it is to integration **F5 BIG-IP and NGINX technologies using OpenShift 4.11**. This guide simplifies the solution by providing examples and step by step guidance using **Operators and OVN-Kubernetes**
 
-F5 BIG-IP and NGINX provides a solutions called **IngressLink** that use both BIG-IP Container Ingress Services (CIS) and NGINX Ingress Controller deployed in OpenShift 4.11 using the operators. It’s an elegant control plane solution that offers a unified method of working with both technologies from a single interface—offering the best of BIG-IP and NGINX and fostering better collaboration across NetOps and DevOps teams. The diagram below demonstrates this use-case.
-
-This architecture diagram demonstrates the simplified Kubernetes Ingress solution
+F5 BIG-IP and NGINX provides a solutions called **IngressLink** that use both **F5 BIG-IP Container Ingress Services (CIS)** and **NGINX Ingress Controller** deployed in OpenShift 4.11 using the Operators from OpenShift OperatorHub. It’s an elegant control plane solution that offers a unified method of working with both technologies from a single interface—offering the best of **F5 BIG-IP and NGINX** and **fostering better collaboration across NetOps and DevOps teams**. The diagram below demonstrates the architecture
 
 ![architecture](https://github.com/mdditt2000/openshift-4-11/blob/main/ingresslink-on-openshift/diagram/2022-10-24_13-38-38.png)
 

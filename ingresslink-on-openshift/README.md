@@ -114,7 +114,7 @@ Select the Create tab
 
 Create the second instance for **f5-server-02**
 
-![diagram](https://github.com/mdditt2000/openshift-4-11/blob/main/ingresslink-on-openshift/diagram/2022-10-24_14-36-33.png)
+![diagram](https://github.com/mdditt2000/openshift-4-11/blob/main/ingresslink-on-openshift/diagram/2022-10-24_14-37-23.png)
 
 ### BIG-IP 02
 
@@ -152,11 +152,15 @@ spec:
   bigip_login_secret: bigip-login
 ```
 
+View two instances of CIS created
+
+![diagram](https://github.com/mdditt2000/openshift-4-11/blob/main/ingresslink-on-openshift/diagram/2022-10-24_14-38-43.png)
+
 ### Step 6
 
 Validate CIS deployment. Select Workloads/Deployments 
 
-![diagram](https://github.com/mdditt2000/k8s-bigip-ctlr/blob/main/user_guides/operator/diagrams/2021-06-14_14-42-54.png)
+![diagram](https://github.com/mdditt2000/openshift-4-11/blob/main/ingresslink-on-openshift/diagram/2022-10-24_14-38-43.png)
 
 Select the **f5-bigip-ctlr-operator** to see more details on the CIS deployment. Also validate the CIS deployment image
 

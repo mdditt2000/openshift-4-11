@@ -56,13 +56,13 @@ Once installed select the View Operator tab
 
 ### Step 4
 
-Now that the operator is installed you can create an instance of CIS. This will deploy CIS in OpenShift
+Now that the operator is installed you can create an **two instance of CIS**. This will also deploy CIS in OpenShift
 
-![diagram](https://github.com/mdditt2000/k8s-bigip-ctlr/blob/main/user_guides/operator/diagrams/2021-06-14_14-07-36.png)
+![diagram](https://github.com/mdditt2000/openshift-4-11/blob/main/ingresslink-on-openshift/diagram/2022-10-24_14-07-32.png)
 
 Note that currently some fields may not be represented in form so its best to use the "YAML View" for full control of object creation. Select the "YAML View"
 
-![diagram](https://github.com/mdditt2000/k8s-bigip-ctlr/blob/main/user_guides/operator/diagrams/2021-06-14_14-14-41.png)
+![diagram](hhttps://github.com/mdditt2000/openshift-4-11/blob/main/ingresslink-on-openshift/diagram/2022-10-24_14-24-00.png)
 
 ### Step 5
 

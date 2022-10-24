@@ -6,7 +6,7 @@ F5 BIG-IP and NGINX provides a solutions called **IngressLink** that use both BI
 
 This architecture diagram demonstrates the simplified Kubernetes Ingress solution
 
-![architecture]()
+![architecture](https://github.com/mdditt2000/openshift-4-11/blob/main/ingresslink-on-openshift/diagram/2022-10-24_13-38-38.png)
 
 Demo on YouTube [video]()
 
@@ -21,7 +21,7 @@ This document demonstrates **High Availability (HA) BIG-IP's working with OVN-Ku
 
 **Step 1:**
 
-### Install the CIS Controllers using the Operator
+### Install the Two CIS Controllers using the Operator
 
 ### Prerequisites
 
@@ -33,13 +33,13 @@ Create BIG-IP login credentials for use with Operator Helm charts
 
 Locate the F5 Container Ingress Services Operator in OpenShift OperatorHub as shown in the diagram below
 
-![diagram]()
+![diagram](https://github.com/mdditt2000/openshift-4-11/blob/main/ingresslink-on-openshift/diagram/2022-10-24_13-14-36.png)
     
 ### Create CIS CRD schema
 
     kubectl create -f customresourcedefinition.yaml
 
-cis-crd-schema [repo](https://github.com/mdditt2000/k8s-bigip-ctlr/blob/main/user_guides/simplifying-ingress/cis/cis-crd-schema/customresourcedefinition.yaml)
+cis-crd-schema [repo](https://github.com/F5Networks/k8s-bigip-ctlr/blob/master/docs/config_examples/customResourceDefinitions/customresourcedefinitions.yml)
 
 ### Update the bigip address, partition and other details(image, imagePullSecrets, etc) in CIS deployment manifest
 

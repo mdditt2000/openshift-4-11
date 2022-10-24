@@ -163,8 +163,4 @@ Validate CIS deployment. Select Workloads/Deployments
 
 ![diagram](https://github.com/mdditt2000/openshift-4-11/blob/main/ingresslink-on-openshift/diagram/2022-10-24_14-38-43.png)
 
-Select the **f5-bigip-ctlr-operator** to see more details on the CIS deployment. Also validate the CIS deployment image
-
-![diagram](https://github.com/mdditt2000/k8s-bigip-ctlr/blob/main/user_guides/operator/diagrams/2021-06-14_14-45-08.png)
-
 Failed to create two CIS instances 

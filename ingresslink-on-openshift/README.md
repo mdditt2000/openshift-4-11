@@ -2,7 +2,7 @@
 
 The purpose of this document is to demonstrate how easy it is to integration **F5 BIG-IP and NGINX technologies using OpenShift 4.11**. This guide simplifies the solution by providing examples and step by step guidance using **Operators and OVN-Kubernetes**
 
-F5 BIG-IP and NGINX provides a solutions called **IngressLink** that use both **F5 BIG-IP Container Ingress Services (CIS)** and **NGINX Ingress Controller** deployed in OpenShift 4.11 using the Operators from OpenShift OperatorHub. It’s an elegant control plane solution that offers a unified method of working with both technologies from a single interface—offering the best of **F5 BIG-IP and NGINX** and **fostering better collaboration across NetOps and DevOps teams**. The diagram below demonstrates the architecture
+F5 BIG-IP and NGINX provides a solutions called **IngressLink** that use both **F5 BIG-IP Container Ingress Services (CIS)** and **NGINX Ingress Controller** deployed in OpenShift 4.11. It’s an elegant control plane solution that offers a unified method of working with both technologies from a single interface—offering the best of **F5 BIG-IP and NGINX** and **fostering better collaboration across NetOps and DevOps teams**. The diagram below demonstrates the architecture
 
 ![architecture](https://github.com/mdditt2000/openshift-4-11/blob/main/ingresslink-on-openshift/diagram/2022-10-24_13-38-38.png)
 
@@ -18,153 +18,146 @@ This document demonstrates **High Availability (HA) F5 BIG-IP's working with OVN
 
 **Step 1:**
 
-### Install the two CIS Controllers using the Operators
+### Step 1: Deploy OpenShift using OVNKubernetes
 
-### Prerequisites
+Deploy OpenShift Cluster with **networktype** as **OVNKubernetes**. Change the default to **OVNKubernetes** in the install-config.yaml before creating the cluster
 
-Create BIG-IP login credentials for use with Operator Helm charts
-
-    oc create secret generic bigip-login  -n kube-system --from-literal=username=admin  --from-literal=password=<secret>
-
-### Step 1
-
-Locate the F5 Container Ingress Services Operator in OpenShift OperatorHub as shown in the diagram below
-
-![diagram](https://github.com/mdditt2000/openshift-4-11/blob/main/ingresslink-on-openshift/diagram/2022-10-24_13-14-36.png)
-
-**Note:** Each F5 BIG-IP requires a unique instance of CIS
-
-### Step 2
-
-Select the Install tab as shown in the diagram
-
-![diagram](https://github.com/mdditt2000/openshift-4-11/blob/main/ingresslink-on-openshift/diagram/2022-10-24_13-50-31.png)
-
-### Step 3
-
-Install the Operator using the defaults
-
-![diagram](https://github.com/mdditt2000/openshift-4-11/blob/main/ingresslink-on-openshift/diagram/2022-10-24_13-53-03.png)
-
-Operator will take a few minutes to install
-
-![diagram](https://github.com/mdditt2000/openshift-4-11/blob/main/ingresslink-on-openshift/diagram/2022-10-24_13-55-06.png)
-
-Once installed select the View Operator tab
-
-![diagram](https://github.com/mdditt2000/openshift-4-11/blob/main/ingresslink-on-openshift/diagram/2022-10-24_13-56-49.png)
-
-### Step 4
-
-Create **two instance of CIS**. This will also deploy CIS in OpenShift
-
-![diagram](https://github.com/mdditt2000/openshift-4-11/blob/main/ingresslink-on-openshift/diagram/2022-10-24_14-07-32.png)
-
-Note that currently some fields may not be represented in form so its best to use the "YAML View" for full control of object creation. Select the "YAML View"
-
-![diagram](https://github.com/mdditt2000/openshift-4-11/blob/main/ingresslink-on-openshift/diagram/2022-10-24_14-24-00.png)
-
-### Step 5
-
-Enter requirement objects in the YAML View. Please add the recommended setting below:
-
-* Remove **agent as3** as this is default
-* Change repo image to **f5networks/cntr-ingress-svcs**. By default OpenShift will pull the image from Docker. 
-* Change the user to **registry.connect.redhat.com** to published image from the RedHat Ecosystem Catalog [repo](https://catalog.redhat.com/software/containers/f5networks/cntr-ingress-svcs/5ec7ad05ecb5246c0903f4cf)
-* Change **custom-resource-mode: true** for **IngressLink CRD**
-
-### f5-server-01
+### Step 2: Verify gateway mode set to shared
 
 ```
-apiVersion: cis.f5.com/v1
-kind: F5BigIpCtlr
+# oc get nodes
+NAME                        STATUS   ROLES    AGE   VERSION
+ocp-pm-trw88-master-0       Ready    master   68m   v1.24.0+3882f8f
+ocp-pm-trw88-master-1       Ready    master   67m   v1.24.0+3882f8f
+ocp-pm-trw88-master-2       Ready    master   67m   v1.24.0+3882f8f
+ocp-pm-trw88-worker-d6zsg   Ready    worker   50m   v1.24.0+3882f8f
+ocp-pm-trw88-worker-k7lsd   Ready    worker   55m   v1.24.0+3882f8f
+ocp-pm-trw88-worker-vdtmb   Ready    worker   55m   v1.24.0+3882f8f
+```
+
+```
+# oc logs -f ovnkube-node-2bcx7 ovnkube-node -n openshift-ovn-kubernetes|grep "gateway_mode_flags"
++ gateway_mode_flags='--gateway-mode shared --gateway-interface br-ex'
+```
+
+### Step 3: Configure BIG-IP Routes
+
+Configure static routes in BIG-IP with node subnets assigned for the three worker nodes in the OpenShift cluster. Get the node subnet assigned and host address
+
+```
+# oc describe node ocp-pm-trw88-worker-d6zsg |grep "node-subnets\|node-primary-ifaddr"
+k8s.ovn.org/host-addresses: ["10.192.125.172"]
+k8s.ovn.org/node-subnets: {"default":"10.129.2.0/23"}
+
+# oc describe node ocp-pm-trw88-worker-k7lsd |grep "node-subnets\|node-primary-ifaddr"
+k8s.ovn.org/node-primary-ifaddr: {"ipv4":"10.192.125.174/24"}
+k8s.ovn.org/node-subnets: {"default":"10.131.0.0/23"}
+
+# oc describe node ocp-pm-trw88-worker-vdtmb |grep "node-subnets\|node-primary-ifaddr"
+k8s.ovn.org/host-addresses: ["10.192.125.177"]
+k8s.ovn.org/node-subnets: {"default":"10.128.2.0/23"}
+```
+
+Add static routes to BIG-IP via tmsh for all node subnets using 
+
+```
+tmsh create /net route <node_subnet> gw <node_ip>
+```
+```
+tmsh create /net route 10.129.2.0/23 gw 10.192.125.172
+tmsh create /net route 10.131.0.0/23 gw 10.192.125.174
+tmsh create /net route 10.128.2.0/23 gw 10.192.125.177
+```
+View static routes created on BIG-IP
+
+![routes](https://github.com/mdditt2000/k8s-bigip-ctlr/blob/main/user_guides/ovn-kubernetes-ha/diagram/2022-10-12_13-30-34.png)
+
+**Note:** Manually sync the BIG-IP so the routes are deployed on the standby
+
+### Step 4: Configure egress from OpenShift cluster to BIG-IP
+
+Configure egress from OpenShift cluster to BIG-IP using k8s.ovn.org/routing-external-gws annotation on namespace where the application is deployed as shown in the diagram above. Use the BIG-IP floating self-IP address for the **routing-external-gws: 10.192.125.62**
+
+```
+apiVersion: v1
+kind: Namespace
 metadata:
-  name: f5-server-01
-  namespace: openshift-operators
-spec:
-  ingressClass:
-    create: false
-    ingressClassName: f5
-    defaultController: false
-  resources: {}
-  rbac:
-    create: true
-  version: latest
-  serviceAccount:
-    create: true
-  image:
-    pullPolicy: Always
-    repo: f5networks/cntr-ingress-svcs
-    user: registry.connect.redhat.com
-  namespace: kube-system
-  args:
-    log-as3-response: true
-    custom-resource-mode: true
-    log-level: DEBUG
-    bigip-partition: OpenShift
-    bigip-url: 10.192.75.60
-    insecure: true
-    pool-member-type: cluster
-    namespace: nginx-ingress
-  bigip_login_secret: bigip-login
+  annotations:
+    k8s.ovn.org/routing-external-gws: 10.192.125.62 ##BIG-IP floating self-interface address rotatable to the OpenShift nodes
+  labels:
+    kubernetes.io/metadata.name: default
+  name: cafe
 ```
+routing-external-gws [repo](https://github.com/mdditt2000/k8s-bigip-ctlr/blob/main/user_guides/ovn-kubernetes-ha/demo-app/cafe/name-cafe.yaml)
 
-Select the Create tab
+**Setup complete!** Deploy CIS and create OpenShift Routes
 
-![diagram](https://github.com/mdditt2000/openshift-4-11/blob/main/ingresslink-on-openshift/diagram/2022-10-24_14-36-33.png)
+### Step 5: Deploy CIS for each BIG-IP
 
-Create the second instance for **f5-server-02**
+F5 Controller Ingress Services (CIS) called **Next Generation Routes Controller**. Next Generation Routes Controller extended F5 CIS to use multiple Virtual IP addresses. Before F5 CIS could only manage one Virtual IP address per CIS instance.
 
-![diagram](https://github.com/mdditt2000/openshift-4-11/blob/main/ingresslink-on-openshift/diagram/2022-10-24_14-37-23.png)
+Add the following parameters to the CIS deployment
 
-### f5-server-02
+* Routegroup specific config for each namespace is provided as part of extendedSpec through ConfigMap.
+* ConfigMap info is passed to CIS with argument --route-spec-configmap="namespace/configmap-name"
+* Controller mode should be set to openshift to enable multiple VIP support(--controller-mode="openshift")
+
+### BIG-IP 01
 
 ```
-apiVersion: cis.f5.com/v1
-kind: F5BigIpCtlr
-metadata:
-  name: f5-server-02
-  namespace: openshift-operators
-spec:
-  ingressClass:
-    create: false
-    ingressClassName: f5
-    defaultController: false
-  resources: {}
-  rbac:
-    create: true
-  version: latest
-  serviceAccount:
-    create: true
-  image:
-    pullPolicy: Always
-    repo: f5networks/cntr-ingress-svcs
-    user: registry.connect.redhat.com
-  namespace: kube-system
-  args:
-    log-as3-response: true
-    custom-resource-mode: true
-    log-level: DEBUG
-    bigip-partition: OpenShift
-    bigip-url: 10.192.75.61
-    insecure: true
-    pool-member-type: cluster
-    namespace: nginx-ingress
-  bigip_login_secret: bigip-login
+args: [
+  # See the k8s-bigip-ctlr documentation for information about
+  # all config options
+  # https://clouddocs.f5.com/containers/latest/
+  "--bigip-username=$(BIGIP_USERNAME)",
+  "--bigip-password=$(BIGIP_PASSWORD)",
+  "--bigip-url=10.192.125.60",
+  "--bigip-partition=OpenShift",
+  "--namespace=nginx-ingress",
+  "--pool-member-type=cluster",
+  "--insecure=true",
+  "--custom-resource-mode=true",
+  "--as3-validation=true",
+  "--log-as3-response=true",
+]
 ```
 
-Verify that **f5-server-01** and **f5-server-02** are created
+### BIG-IP 02
 
-![diagram](https://github.com/mdditt2000/openshift-4-11/blob/main/ingresslink-on-openshift/diagram/2022-10-24_14-38-43.png)
+```
+args: [
+  # See the k8s-bigip-ctlr documentation for information about
+  # all config options
+  # https://clouddocs.f5.com/containers/latest/
+  "--bigip-username=$(BIGIP_USERNAME)",
+  "--bigip-password=$(BIGIP_PASSWORD)",
+  "--bigip-url=10.192.125.61",
+  "--bigip-partition=OpenShift",
+  "--namespace=nginx-ingress",
+  "--pool-member-type=cluster",
+  "--insecure=true",
+  "--custom-resource-mode=true",
+  "--as3-validation=true",
+  "--log-as3-response=true",
+]
+```
 
-### Step 6
+Deploy CIS in OpenShift
 
-Validate CIS deployment. Select Workloads/Deployments 
+```
+oc create secret generic bigip-login -n kube-system --from-literal=username=admin --from-literal=password=<secret>
+oc create -f bigip-ctlr-clusterrole.yaml
+oc create -f f5-bigip-ctlr-01-deployment.yaml
+oc create -f f5-bigip-ctlr-02-deployment.yaml
+```
 
-![diagram](https://github.com/mdditt2000/openshift-4-11/blob/main/ingresslink-on-openshift/diagram/2022-10-24_14-38-43.png)
+CIS [repo](https://github.com/mdditt2000/k8s-bigip-ctlr/tree/main/user_guides/ovn-kubernetes-ha/next-gen-route/cis)
 
-Select the **f5-bigip-ctlr-operator** to see more details on the CIS deployment. Also validate the CIS deployment image
+Validate both CIS instances are running 
 
-![diagram](https://github.com/mdditt2000/k8s-bigip-ctlr/blob/main/user_guides/operator/diagrams/2021-06-14_14-45-08.png)
-
-Failed to create two CIS instances 
+```
+# oc get pod -n kube-system
+NAME                                            READY   STATUS    RESTARTS   AGE
+k8s-bigip-ctlr-01-deployment-7cc8b7cf94-2csz7   1/1     Running   0          16s
+k8s-bigip-ctlr-02-deployment-5c8d8c4676-hjwpr   1/1     Running   0          16s
+```

@@ -8,4 +8,4 @@ spec:
   host: cafe.example.com
   selector:
     matchLabels:
-      app: nginx-ingress
+      app: nginx-ingress-operator-controller-manager

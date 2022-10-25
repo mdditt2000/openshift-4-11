@@ -1,14 +1,17 @@
-apiVersion: k8s.nginx.org/v1alpha1
-kind: NginxIngressController
+kind: NginxIngress
+apiVersion: charts.nginx.org/v1alpha1
 metadata:
   name: nginx-ingress-controller
   namespace: nginx-ingress
 spec:
   type: deployment
-  nginxPlus: false
   image:
     repository: nginx/nginx-ingress
-    tag: 2.1.1-ubi
+    tag: edge
     pullPolicy: Always
-  replicas: 2
+  reportIngressStatus:
+      annotations: {}
+      enable: true
+      enableLeaderElection: true
+      ingressLink: true
   serviceType: NodePort

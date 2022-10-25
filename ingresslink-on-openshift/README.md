@@ -169,28 +169,21 @@ nginx-config [repo](https://github.com/mdditt2000/k8s-bigip-ctlr/tree/main/user_
 
 ### Step 1: Validate NGINX Ingress Operator on OpenShift
 
-![operator](https://github.com/mdditt2000/k8s-bigip-ctlr/blob/main/user_guides/multi-deployment-nginx/diagram/2022-03-02_14-33-05.png)
+![operator](https://github.com/mdditt2000/openshift-4-11/blob/main/ingresslink-on-openshift/diagram/2022-10-24_17-31-27.png)
 
 ```
-# oc get deployment -n nginx-ingress
-NAME                                        READY   UP-TO-DATE   AVAILABLE   AGE
-nginx-ingress-controller                    1/1     1            1           5d19h
-nginx-ingress-operator-controller-manager   1/1     1            1           5d19h
-[root@ocp-installer secure]# kubectl -n nginx-ingress  get all
-NAME                                                            READY   STATUS    RESTARTS        AGE
-pod/nginx-ingress-controller-66b4c4f7-smk8h                     1/1     Running   0               5d19h
-pod/nginx-ingress-operator-controller-manager-c4fbbcb9f-xkvds   2/2     Running   1 (2d12h ago)   5d19h
+#  oc -n nginx-ingress get all
+NAME                                                             READY   STATUS    RESTARTS   AGE
+pod/nginx-ingress-operator-controller-manager-57cc8f4d47-qv9vq   2/2     Running   0          61s
 
-NAME                                                                TYPE        CLUSTER-IP       EXTERNAL-IP   PORT(S)                      AGE
-service/nginx-ingress-controller                                    NodePort    172.30.175.208   <none>        80:30046/TCP,443:32028/TCP   5d19h
-service/nginx-ingress-operator-controller-manager-metrics-service   ClusterIP   172.30.0.114     <none>        8443/TCP                     5d19h
+NAME                                             TYPE           CLUSTER-IP      EXTERNAL-IP   PORT(S)                      AGE
+service/nginx-ingress-controller-nginx-ingress   LoadBalancer   172.30.47.213   <pending>     80:30833/TCP,443:31256/TCP   35s
 
 NAME                                                        READY   UP-TO-DATE   AVAILABLE   AGE
-deployment.apps/nginx-ingress-controller                    1/1     1            1           5d19h
-deployment.apps/nginx-ingress-operator-controller-manager   1/1     1            1           5d19h
+deployment.apps/nginx-ingress-controller-nginx-ingress      0/1     0            0           35s
+deployment.apps/nginx-ingress-operator-controller-manager   1/1     1            1           61s
 
-NAME                                                                  DESIRED   CURRENT   READY   AGE
-replicaset.apps/nginx-ingress-controller-66b4c4f7                     1         1         1       5d19h
-replicaset.apps/nginx-ingress-operator-controller-manager-c4fbbcb9f   1         1         1       5d19h
-
+NAME                                                                   DESIRED   CURRENT   READY   AGE
+replicaset.apps/nginx-ingress-controller-nginx-ingress-68df8845cc      1         0         0       35s
+replicaset.apps/nginx-ingress-operator-controller-manager-57cc8f4d47   1         1         1       61s
 ```

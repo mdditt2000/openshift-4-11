@@ -43,7 +43,7 @@ spec:
               "--bigip-password=$(BIGIP_PASSWORD)",
               "--bigip-url=10.192.125.61",
               "--bigip-partition=OpenShift",
-              "--namespace=nginx-ingress",
+              "--namespace=openshift-operators",
               "--pool-member-type=cluster",
               "--log-level=DEBUG",
               "--insecure=true",

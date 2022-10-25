@@ -165,7 +165,7 @@ k8s-bigip-ctlr-02-deployment-5c8d8c4676-hjwpr   1/1     Running   0          16s
 
 Recommend following [NGINX blog](https://www.nginx.com/blog/getting-started-nginx-ingress-operator-red-hat-openshift/)
 
-nginx-config [repo](https://github.com/mdditt2000/k8s-bigip-ctlr/tree/main/user_guides/multi-deployment-nginx/ocp/nginx-config)
+nginx-config [repo](https://github.com/mdditt2000/openshift-4-11/blob/main/ingresslink-on-openshift/nginx-config/nginx-ingress-controller.yaml)
 
 ### Step 1: Validate NGINX Ingress Operator on OpenShift
 
@@ -187,3 +187,22 @@ NAME                                                                   DESIRED  
 replicaset.apps/nginx-ingress-controller-nginx-ingress-68df8845cc      1         0         0       35s
 replicaset.apps/nginx-ingress-operator-controller-manager-57cc8f4d47   1         1         1       61s
 ```
+## Deploy the Cafe Application
+
+**Step 1**
+
+Create the coffee and the tea deployments and services:
+
+    kubectl create -f cafe.yaml
+
+### Configure Load Balancing for the Cafe Application
+
+Create a secret with an SSL certificate and a key:
+
+    kubectl create -f cafe-secret.yaml
+
+Create an Ingress resource:
+
+    kubectl create -f cafe-ingress.yaml
+
+demo application [repo](https://github.com/mdditt2000/k8s-bigip-ctlr/tree/main/user_guides/ingresslink-externaldns/ingress-example)

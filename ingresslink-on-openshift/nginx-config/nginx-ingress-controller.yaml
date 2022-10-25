@@ -1,5 +1,5 @@
-apiVersion: k8s.nginx.org/v1alpha1
-kind: NginxIngressController
+kind: NginxIngress
+apiVersion: charts.nginx.org/v1alpha1
 metadata:
   name: nginx-ingress-controller
   namespace: nginx-ingress

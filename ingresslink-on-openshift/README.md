@@ -7,7 +7,7 @@ F5 BIG-IP and NGINX provides a solutions called **IngressLink** that use both **
 ![architecture](https://github.com/mdditt2000/openshift-4-11/blob/main/ingresslink-on-openshift/diagram/2022-10-24_13-38-38.png)
 
 Demo on YouTube [video]()
-KubeCon Presentation ()
+KubeCon Presentation (https://github.com/mdditt2000/openshift-4-11/blob/main/ingresslink-on-openshift/presentation/KubeCon%202022%20Overview.pptx)
 
 On this page you’ll find:
 

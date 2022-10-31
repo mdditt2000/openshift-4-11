@@ -73,33 +73,14 @@ View static routes created on BIG-IP
 
 **Note:** Manually sync the BIG-IP so the routes are deployed on the standby
 
-### Step 4: Configure egress from OpenShift cluster to BIG-IP
+### Step 4: Deploy CIS for each BIG-IP
 
-Configure egress from OpenShift cluster to BIG-IP using k8s.ovn.org/routing-external-gws annotation on namespace where the application is deployed as shown in the diagram above. Use the BIG-IP floating self-IP address for the **routing-external-gws: 10.192.125.62**
-
-```
-apiVersion: v1
-kind: Namespace
-metadata:
-  annotations:
-    k8s.ovn.org/routing-external-gws: 10.192.125.62 ##BIG-IP floating self-interface address rotatable to the OpenShift nodes
-  labels:
-    kubernetes.io/metadata.name: default
-  name: nginx-ingress
-```
-routing-external-gws [repo](https://github.com/mdditt2000/k8s-bigip-ctlr/blob/main/user_guides/ovn-kubernetes-ha/demo-app/cafe/name-cafe.yaml)
-
-**Setup complete!** Deploy CIS and create OpenShift Routes
-
-### Step 5: Deploy CIS for each BIG-IP
-
-F5 Controller Ingress Services (CIS) called **Next Generation Routes Controller**. Next Generation Routes Controller extended F5 CIS to use multiple Virtual IP addresses. Before F5 CIS could only manage one Virtual IP address per CIS instance.
+**IngressLink** utilizes a CRD, which creates a port 80 and 443 Virtual Servers on the BIG-IP. The CRD also adds health monitoring which monitors the liveliness of NGINX Ingress Controller. All you need todo is create the VirtualServer CRD. Make sure all the CRD schema's are installed for CIS and NGINX. Also add the proxy protocol iRule if required 
 
 Add the following parameters to the CIS deployment
 
-* Routegroup specific config for each namespace is provided as part of extendedSpec through ConfigMap.
-* ConfigMap info is passed to CIS with argument --route-spec-configmap="namespace/configmap-name"
-* Controller mode should be set to openshift to enable multiple VIP support(--controller-mode="openshift")
+* Namespace should be **nginx-ingress**
+* Enable CRD mode on CIS
 
 ### BIG-IP 01
 
@@ -164,39 +145,89 @@ k8s-bigip-ctlr-02-deployment-5c8d8c4676-hjwpr   1/1     Running   0          16s
 
 ## Deploy NGINX Ingress Operator on OpenShift
 
-Recommend following [NGINX blog](https://www.nginx.com/blog/getting-started-nginx-ingress-operator-red-hat-openshift/)
+Recommend following [NGINX blog](https://github.com/nginxinc/nginx-ingress-helm-operator)
 
-nginx-config [repo](https://github.com/mdditt2000/openshift-4-11/blob/main/ingresslink-on-openshift/nginx-config/nginx-ingress-controller.yaml)
+Using the following version:
 
-### Step 1: Validate NGINX Ingress Operator on OpenShift
+* NGINX Ingress Controller 2.4.x
+* NGINX Ingress Operator 1.2.0
 
-![operator](https://github.com/mdditt2000/openshift-4-11/blob/main/ingresslink-on-openshift/diagram/2022-10-24_17-31-27.png)
+### Step 1: Create the scc resource
+
+ Create the scc resource on the cluster by applying the scc.yaml
 
 ```
-#  oc -n nginx-ingress get all
-NAME                                                             READY   STATUS    RESTARTS   AGE
-pod/nginx-ingress-operator-controller-manager-57cc8f4d47-qv9vq   2/2     Running   0          61s
+# oc apply -f scc.yaml
+securitycontextconstraints.security.openshift.io/nginx-ingress-admin created
+```
 
-NAME                                             TYPE           CLUSTER-IP      EXTERNAL-IP   PORT(S)                      AGE
-service/nginx-ingress-controller-nginx-ingress   LoadBalancer   172.30.47.213   <pending>     80:30833/TCP,443:31256/TCP   35s
+SCC [repo](https://github.com/mdditt2000/openshift-4-11/blob/main/ingresslink-on-openshift/nginx-config/scc.yaml)
+
+### Step 2: Create the NginxIngress Instance
+
+Change the name
+
+```
+metadata:
+  name: nginxingress
+```
+
+Also change reportIngressStatus for IngressLink to true
+
+```
+reportIngressStatus:
+      annotations: {}
+      enable: true
+      enableLeaderElection: true
+      ingressLink: true
+```
+
+![operator](https://github.com/mdditt2000/openshift-4-11/blob/main/ingresslink-on-openshift/diagram/2022-10-31_11-04-07.png)
+
+### Step 3: Validate NGINX Ingress Operator on OpenShift
+
+Make sure the **service/nginxingress-nginx-ingress** and **pod/nginxingress-nginx-ingress** are running as shown below
+
+```
+[root@ocp-installer crd-resource]#  oc -n nginx-ingress get all
+NAME                                                             READY   STATUS    RESTARTS   AGE
+pod/nginx-ingress-operator-controller-manager-79466fc4f8-b28g4   2/2     Running   0          4d2h
+pod/nginxingress-nginx-ingress-8597774775-77gn5                  1/1     Running   0          4d2h
+
+NAME                                                                TYPE           CLUSTER-IP       EXTERNAL-IP   PORT(S)                      AGE
+service/nginx-ingress-operator-controller-manager-metrics-service   ClusterIP      172.30.215.139   <none>        8443/TCP                     4d2h
+service/nginxingress-nginx-ingress                                  LoadBalancer   172.30.66.55     <pending>     80:30971/TCP,443:31260/TCP   4d2h
 
 NAME                                                        READY   UP-TO-DATE   AVAILABLE   AGE
-deployment.apps/nginx-ingress-controller-nginx-ingress      0/1     0            0           35s
-deployment.apps/nginx-ingress-operator-controller-manager   1/1     1            1           61s
+deployment.apps/nginx-ingress-operator-controller-manager   1/1     1            1           4d2h
+deployment.apps/nginxingress-nginx-ingress                  1/1     1            1           4d2h
 
 NAME                                                                   DESIRED   CURRENT   READY   AGE
-replicaset.apps/nginx-ingress-controller-nginx-ingress-68df8845cc      1         0         0       35s
-replicaset.apps/nginx-ingress-operator-controller-manager-57cc8f4d47   1         1         1       61s
+replicaset.apps/nginx-ingress-operator-controller-manager-79466fc4f8   1         1         1       4d2h
+replicaset.apps/nginxingress-nginx-ingress-8597774775                  1         1         1       4d2h
+[root@ocp-installer crd-resource]#
+s
 ```
+
+### Step 4: Add label to the Service
+
+Add label **app=nginxingress-nginx-ingress** to the **nginxingress-nginx-ingress**. This is required for CIS service discovery
+
+![service](https://github.com/mdditt2000/openshift-4-11/blob/main/ingresslink-on-openshift/diagram/2022-10-31_11-14-49.png)
+
+### Step 5: Add egress from OpenShift cluster to BIG-IP
+
+Add annotation on **nginx-ingress** namespace for egress from OpenShift cluster to BIG-IP using k8s.ovn.org/routing-external-gws annotation. Use the BIG-IP floating self-IP address for the **routing-external-gws: 10.192.125.62**
+
+![name-space](https://github.com/mdditt2000/openshift-4-11/blob/main/ingresslink-on-openshift/diagram/2022-10-31_11-19-38.png)
+
 ## Deploy the Cafe Application
 
-**Step 1**
+### Step 1: Configure Load Balancing for the Cafe Application
 
 Create the coffee and the tea deployments and services:
 
     kubectl create -f cafe.yaml
-
-### Configure Load Balancing for the Cafe Application
 
 Create a secret with an SSL certificate and a key:
 
@@ -207,3 +238,19 @@ Create an Ingress resource:
     kubectl create -f cafe-ingress.yaml
 
 demo application [repo](https://github.com/mdditt2000/k8s-bigip-ctlr/tree/main/user_guides/ingresslink-externaldns/ingress-example)
+
+## Create the CRD Resource
+
+```
+# oc create -f vs-ingresslink.yaml
+ingresslink.cis.f5.com/vs-ingresslink created
+```
+
+CRD [repo](https://github.com/mdditt2000/openshift-4-11/blob/main/ingresslink-on-openshift/cis/crd-resource/vs-ingresslink.yaml)
+
+## Connect to the VirtualServer
+
+* BIG-IP is connecting directly to the application pod
+* Real-IP is the BIG-IP floating IP
+
+![application](https://github.com/mdditt2000/openshift-4-11/blob/main/ingresslink-on-openshift/diagram/2022-10-31_11-24-40.png)

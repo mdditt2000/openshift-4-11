@@ -8,11 +8,11 @@ metadata:
 data:
   extendedSpec: |
     extendedRouteSpec:
-    - namespace: cafeOne
+    - namespace: cafeone
       vserverAddr: 10.192.125.65
-      vserverName: cafeOne
+      vserverName: cafeone
       allowOverride: true
-    - namespace: cafeTwo
+    - namespace: cafetwo
       vserverAddr: 10.192.125.66
-      vserverName: cafeTwo
+      vserverName: cafetwo
       allowOverride: true

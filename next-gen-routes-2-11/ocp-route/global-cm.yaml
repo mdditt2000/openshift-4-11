@@ -12,9 +12,6 @@ data:
       vserverAddr: 10.192.125.65
       vserverName: cafeone
       allowOverride: true
-      tls:
-        serverSSL: /Common/serverssl
-        reference: bigip
     - namespace: cafetwo
       vserverAddr: 10.192.125.66
       vserverName: cafetwo

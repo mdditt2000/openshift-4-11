@@ -2,7 +2,7 @@ apiVersion: route.openshift.io/v1
 kind: Route
 metadata:
   labels:
-    f5tnr: "true"
+    f5nr: "true"
   name: cafe-tea-edge
   namespace: cafetwo
 spec:

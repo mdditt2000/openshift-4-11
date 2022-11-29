@@ -4,9 +4,9 @@ metadata:
   labels:
     f5tnr: "true"
   name: cafe-mocha-edge
-  namespace: cafeTwo
+  namespace: cafetwo
 spec:
-  host: cafeTwo.example.com
+  host: cafetwo.example.com
   path: "/mocha"
   port:
     targetPort: 8080

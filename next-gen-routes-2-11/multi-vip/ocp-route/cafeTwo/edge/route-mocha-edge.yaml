@@ -3,11 +3,11 @@ kind: Route
 metadata:
   labels:
     f5tnr: "true"
-  name: cafe-tea-edge
-  namespace: cafe
+  name: cafe-mocha-edge
+  namespace: cafeTwo
 spec:
-  host: cafe.example.com
-  path: "/tea"
+  host: cafeTwo.example.com
+  path: "/mocha"
   port:
     targetPort: 8080
   tls:
@@ -99,4 +99,4 @@ spec:
     termination: edge
   to:
     kind: Service
-    name: tea-svc
+    name: mocha-svc

@@ -4,9 +4,9 @@ metadata:
   labels:
     f5tnr: "true"
   name: cafe-coffee-edge
-  namespace: cafe
+  namespace: cafeTwo
 spec:
-  host: cafe.example.com
+  host: cafeTwo.example.com
   path: "/coffee"
   port:
     targetPort: 8080

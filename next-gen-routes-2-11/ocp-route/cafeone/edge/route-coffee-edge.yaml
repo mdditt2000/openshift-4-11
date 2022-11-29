@@ -10,6 +10,8 @@ spec:
   path: "/coffee"
   port:
     targetPort: 8080
+  tls:
+    termination: edge
   to:
     kind: Service
     name: coffee-svc

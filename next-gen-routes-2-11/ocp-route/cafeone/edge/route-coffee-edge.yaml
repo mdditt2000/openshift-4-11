@@ -11,6 +11,7 @@ spec:
   port:
     targetPort: 8080
   tls:
+    termination: edge
     serverSSL: /Common/serverssl
     reference: bigip
   to:

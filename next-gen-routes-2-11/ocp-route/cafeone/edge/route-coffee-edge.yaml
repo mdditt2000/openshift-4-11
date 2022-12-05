@@ -5,15 +5,28 @@ metadata:
     f5nr: "true"
   name: cafe-coffee-edge
   namespace: cafeone
+  annotations:
+    # annotations
+    # default clientssl profile
+    # health monitoring
+    virtual-server.f5.com/clientssl: /Common/clientssl
+    virtual-server.f5.com/health: |
+      [
+        {
+          "path": "cafeone.example.com/",
+          "send": "HTTP GET /",
+          "interval": 10,
+          "timeout": 31
+        }
+      ]
 spec:
   host: cafeone.example.com
   path: "/coffee"
   port:
     targetPort: 8080
   tls:
+    insecureEdgeTerminationPolicy: Redirect
     termination: edge
-    clientSSL: /Common/clientssl
-    reference: bigip
   to:
     kind: Service
     name: coffee-svc

@@ -48,7 +48,7 @@ spec:
               "--pool-member-type=cluster",
               "--log-level=DEBUG",
               "--insecure=true",
-              "--route-spec-configmap=kube-system/global-cm",
+              "--route-spec-configmap=default/global-cm",
               "--controller-mode=openshift",
               "--as3-validation=true",
               "--log-as3-response=true",

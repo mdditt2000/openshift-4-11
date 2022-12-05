@@ -16,4 +16,3 @@ data:
     - namespace: cafetwo
       vserverAddr: 10.192.125.66
       vserverName: cafetwo
-      policyCR: default/policy-cafe

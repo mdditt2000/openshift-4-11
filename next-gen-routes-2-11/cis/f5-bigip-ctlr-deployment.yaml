@@ -53,5 +53,6 @@ spec:
               "--controller-mode=openshift",
               "--as3-validation=true",
               "--log-as3-response=true",
+              "--cccl-gtm-agent=false",
           ]
       serviceAccountName: bigip-ctlr

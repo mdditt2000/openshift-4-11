@@ -3,8 +3,8 @@ kind: Policy
 metadata: 
   labels: 
     f5cr: "true"
-  name: type-lb
-  namespace: cafeone
+  name: policy-cafe
+  namespace: default
 spec:
   l7Policies:
     waf: /Common/WAF_Policy

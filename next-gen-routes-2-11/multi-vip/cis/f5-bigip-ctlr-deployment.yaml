@@ -43,6 +43,7 @@ spec:
               "--bigip-password=$(BIGIP_PASSWORD)",
               "--bigip-url=10.192.125.60",
               "--bigip-partition=OpenShift",
+              "--namespace=default",
               "--namespace=cafeone",
               "--namespace=cafetwo",
               "--pool-member-type=cluster",

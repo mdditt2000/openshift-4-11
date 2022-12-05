@@ -12,7 +12,6 @@ data:
       vserverAddr: 10.192.125.65
       vserverName: cafeone
       allowOverride: true
-      policyCR: default/policy-cafe
     - namespace: cafetwo
       vserverAddr: 10.192.125.66
       vserverName: cafetwo

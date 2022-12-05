@@ -15,3 +15,4 @@ data:
     - namespace: cafetwo
       vserverAddr: 10.192.125.66
       vserverName: cafetwo
+      allowOverride: true

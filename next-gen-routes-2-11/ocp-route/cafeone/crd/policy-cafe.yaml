@@ -10,4 +10,4 @@ spec:
     waf: /Common/WAF_Policy
   profiles: 
     logProfiles: 
-      - /Common/Common/Log all requests
+      - /Common/Log all requests

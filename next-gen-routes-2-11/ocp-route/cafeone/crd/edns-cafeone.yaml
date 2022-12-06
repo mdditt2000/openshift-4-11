@@ -13,9 +13,19 @@ spec:
   - dnsRecordType: A
     loadBalanceMethod: round-robin
     dataServerName: /Common/ocp.f5demo.com
-    monitor:
-      interval: 10
+    monitors:
+    - interval: 10
       recv: ""
-      send: "GET /tea HTTP/1.1\r\nHost: cafeone.example.com\r\n"
+      send: "GET /tea HTTP/1.1\r\nHost: cafe.example.com\r\n"
+      timeout: 31
+      type: https
+    - interval: 10
+      recv: ""
+      send: "GET /coffee HTTP/1.1\r\nHost: cafe.example.com\r\n"
+      timeout: 31
+      type: https
+    - interval: 10
+      recv: ""
+      send: "GET /mocha HTTP/1.1\r\nHost: cafe.example.com\r\n"
       timeout: 31
       type: https

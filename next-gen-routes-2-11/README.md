@@ -12,35 +12,35 @@ Demo on YouTube [video]()
 
 ### Step 1: Deploy CIS
 
-OpenShift Route API using HAproxy which can only support one **Public IP**, **Virtual Server** per BIG-IP which is configured for all Routes. Routes uses HOST Header Load balancing to determine the backend application. However CIS can resolve this issue by using a Global ConfigMap to specify global objects like IPs etc. This is similar to how Gateway API will work. The Global ConfigMap can be applied in a different namespace than the Routes
-
-Next Generation Routes Controller uses extended ConfigMap, allowing the user to create multiple Virtual IP addresses for OpenShift Routes. Support for multi-partition is also available. Each namespace will be managed in a dedicated partition/tenant on BIG-IP
+Currently OpenShift Route API using HAproxy which can only support one **Public IP**, **Virtual Server** per BIG-IP. Routes uses HOST Header Load balancing to determine the backend application. CIS can resolve this issue by using a Global ConfigMap to specify global objects like IPs, Policies etc. This is similar to how Gateway API will work. The Global ConfigMap can be applied in different namespace than the Routes
 
 Add the following parameters to the CIS deployment
 
-* Routegroup specific config for each namespace is provided as part of extendedSpec through ConfigMap.
-* ConfigMap info is passed to CIS with argument --route-spec-configmap="namespace/configmap-name"
+* Global ConfigMap info is passed to CIS with argument --route-spec-configmap="namespace/configmap-name"
 * Controller mode should be set to openshift to enable multiple VIP support(--controller-mode="openshift")
+* Using AS3 API to post ExternalDNS configuration --cccl-gtm-agent=false
+* Using OVN Kubernetes with static routes. No CNI configured
 
 ```
 args: [
   # See the k8s-bigip-ctlr documentation for information about
   # all config options
   # https://clouddocs.f5.com/containers/latest/
-  "--bigip-username=$(BIGIP_USERNAME)",
-  "--bigip-password=$(BIGIP_PASSWORD)",
-  "--bigip-url=10.192.125.60",
-  "--bigip-partition=OpenShift",
-  "--namespace=default",
-  "--pool-member-type=cluster",
-  "--openshift-sdn-name=/Common/openshift_vxlan",
-  "--insecure=true",
-  "--manage-routes=true",
-  "--route-spec-configmap="kube-system/global-cm"
-  "--controller-mode="openshift"
-  "--as3-validation=true",
-  "--log-as3-response=true",
-]
+    "--bigip-username=$(BIGIP_USERNAME)",
+    "--bigip-password=$(BIGIP_PASSWORD)",
+    "--bigip-url=10.192.125.60",
+    "--bigip-partition=OpenShift",
+    "--namespace=default",
+    "--namespace=cafeone",
+    "--namespace=cafetwo",
+    "--pool-member-type=cluster",
+    "--log-level=DEBUG",
+    "--insecure=true",
+    "--route-spec-configmap=default/global-cm",
+    "--controller-mode=openshift",
+    "--as3-validation=true",
+    "--log-as3-response=true",
+    "--cccl-gtm-agent=false",
 ```
 
 Deploy CIS in OpenShift
@@ -51,35 +51,39 @@ oc create -f bigip-ctlr-clusterrole.yaml
 oc create -f f5-bigip-ctlr-deployment.yaml
 ```
 
-CIS [repo](https://github.com/mdditt2000/openshift-4-9/tree/main/next-gen-routes/multi-vip/cis)
-
-**Note** Do not forget the CNI [repo](https://github.com/mdditt2000/openshift-4-9/tree/main/next-gen-routes/multi-vip/cni)
+CIS [repo](https://github.com/mdditt2000/openshift-4-11/tree/main/next-gen-routes-2-11/cis)
 
 ### Step 2: Deploy Global ConfigMap
 
 Using Global ConfigMap
 
-* Global ConfigMap provides control to the admin to create and maintain the resource configuration centrally.
-* RBAC can be used to restrict modification of global ConfigMap by users with tenant level access.
-* If any specific tenant requires modify access for routeconfig of their namespace, admin can grant access by setting allowOverride to true in the extendedRouteSpec of the namespace.
+* Global ConfigMap provides control to the admin to create and maintain the resource configuration centrally like Public IPs, Policies, Certificates etc
+* RBAC can be used to restrict modification of global ConfigMap by users with tenant level access
 
-* namespace: cafe, vserverAddr: 10.192.125.65
+* namespace: cafeone, vserverAddr: 10.192.125.65
+* namespace: cafetwo, vserverAddr: 10.192.125.66
 
 ```
 apiVersion: v1
 kind: ConfigMap
 metadata:
   name: global-cm
-  namespace: kube-system
+  namespace: default
   labels:
     f5nr: "true"
 data:
   extendedSpec: |
     extendedRouteSpec:
-    - namespace: cafe
+    - namespace: cafeone
       vserverAddr: 10.192.125.65
-      vserverName: cafe
+      vserverName: cafeone
       allowOverride: true
+      policyCR: default/policy-cafe
+    - namespace: cafetwo
+      vserverAddr: 10.192.125.66
+      vserverName: cafetwo
+      allowOverride: true
+      policyCR: default/policy-cafe
 ```
 
 Deploy global ConfigMap
@@ -94,20 +98,30 @@ User-case for the OpenShift Routes:
 
 - Edge Termination
 - Backend listening on PORT 8080
+- Wide-IP configured to GTM
+- WAF, logging policies applied to Virtual IP via PolicyCR
 
-Create OpenShift Routes
+Create OpenShift Routes for **cafeone.example.com**
 
 ```
 oc create -f route-tea-edge.yaml
 oc create -f route-coffee-edge.yaml
 oc create -f route-mocha-edge.yaml
 ```
+Routes [repo](https://github.com/mdditt2000/openshift-4-11/tree/main/next-gen-routes-2-11/ocp-route/cafeone/route)
 
-Routes [repo](https://github.com/mdditt2000/openshift-4-9/tree/main/next-gen-routes/multi-vip/ocp-route/cafe/secure)
+Create OpenShift Routes for **cafetwo.example.com**
 
-Validate OpenShift Routes using the BIG-IP
+```
+oc create -f route-tea-edge.yaml
+oc create -f route-coffee-edge.yaml
+oc create -f route-mocha-edge.yaml
+```
+Routes [repo](https://github.com/mdditt2000/openshift-4-11/tree/main/next-gen-routes-2-11/ocp-route/cafetwo/route)
 
-![big-ip route](https://github.com/mdditt2000/openshift-4-9/blob/main/next-gen-routes/diagram/2022-06-07_15-35-21.png)
+Validate OpenShift Routes for cafeone
+
+![openshift](https://github.com/mdditt2000/openshift-4-9/blob/main/next-gen-routes/diagram/2022-06-07_15-35-21.png)
 
 Validate OpenShift Virtual IP using the BIG-IP
 
@@ -121,72 +135,3 @@ Validate OpenShift Routes policies by connecting to the Public IP
 
 ![traffic](https://github.com/mdditt2000/openshift-4-9/blob/main/next-gen-routes/diagram/2022-06-07_15-38-33.png)
 
-### Step 3: Creating OpenShift Routes for New Domain cafenew.example.com
-
-Creating a second Public IP **Virtual Server** for BIG-IP to handle a difference group of applications, namespace or project. Routes uses HOST Header Load balancing to determine the backend application. In this example the backend is **/tea,/coffee and /mocha** using hostname **"cafenew.example.com"**
-
-### Step 2: Apply Global ConfigMap Update
-
-Update global ConfigMap with the second Virtual IP address for the new namespace **cafenew.example.com**
-
-* namespace: cafenew, vserverAddr: 10.192.125.66
-
-```
-apiVersion: v1
-kind: ConfigMap
-metadata:
-  name: global-cm
-  namespace: kube-system
-  labels:
-    f5nr: "true"
-data:
-  extendedSpec: |
-    extendedRouteSpec:
-    - namespace: cafe
-      vserverAddr: 10.192.125.65
-      vserverName: cafe
-      allowOverride: true
-    - namespace: cafenew
-      vserverAddr: 10.192.125.66
-      vserverName: cafenew
-      allowOverride: true
-```
-
-Deploy the global ConfigMap update
-
-```
-oc apply -f global-cm.yaml
-```
-
-### Step 3: Creating OpenShift Routes
-
-User-case for the OpenShift Routes:
-
-- Edge Termination
-- Backend listening on PORT 8080
-
-Create OpenShift Routes
-
-```
-oc create -f route-tea-edge.yaml
-oc create -f route-coffee-edge.yaml
-oc create -f route-mocha-edge.yaml
-```
-
-Routes [repo](https://github.com/mdditt2000/openshift-4-9/tree/main/next-gen-routes/multi-vip/ocp-route/cafenew/secure)
-
-Validate OpenShift Routes using the BIG-IP
-
-![big-ip route](https://github.com/mdditt2000/openshift-4-9/blob/main/next-gen-routes/diagram/2022-06-08_09-59-39.png)
-
-Validate OpenShift Virtual IP using the BIG-IP
-
-![big-ip pools](https://github.com/mdditt2000/openshift-4-9/blob/main/next-gen-routes/diagram/2022-06-08_10-01-21.png)
-
-Validate OpenShift Routes policies on the BIG-IP
-
-![traffic](https://github.com/mdditt2000/openshift-4-9/blob/main/next-gen-routes/diagram/2022-06-08_10-02-44.png)
-
-Validate OpenShift Routes policies by connecting to the Public IP
-
-![traffic](https://github.com/mdditt2000/openshift-4-9/blob/main/next-gen-routes/diagram/2022-06-08_10-03-40.png)

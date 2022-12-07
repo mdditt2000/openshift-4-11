@@ -219,3 +219,13 @@ PolicyCRD [repo](https://github.com/mdditt2000/openshift-4-11/blob/main/next-gen
 Validate WAF Policy on the BIG-IP
 
 ![WAF](https://github.com/mdditt2000/openshift-4-11/blob/main/next-gen-routes-2-11/diagram/2022-12-06_17-39-38.png)
+
+### Step 5: Prevent Malicious traffic from OpenShift Cluster
+
+Enable a XSS attacks and make sure WAF blocks the Malicious traffic
+
+![WAF](https://github.com/mdditt2000/openshift-4-11/blob/main/next-gen-routes-2-11/diagram/2022-12-06_17-45-12.png)
+
+Validate Request Logging on BIG-IP 
+
+![Block](https://github.com/mdditt2000/openshift-4-11/blob/main/next-gen-routes-2-11/diagram/2022-12-06_17-50-16.png)

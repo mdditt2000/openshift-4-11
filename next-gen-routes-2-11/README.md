@@ -159,3 +159,63 @@ Validate Wide-IPs on the BIG-IP
 
 ![WIDE-IP](https://github.com/mdditt2000/openshift-4-11/blob/main/next-gen-routes-2-11/diagram/2022-12-06_17-03-01.png)
 
+### Step 4: Enable WAF Protection for the OpenShift Cluster
+
+Global ConfigMap allows for Policies to be associated to the routes. In my example both hosts **cafeone** and **cafetwo**  are using the same WAF policies. CIS uses AS3 simply references and existing policy on BIG-IP. Logging of all request is also enabled. The PolicyCRD provides flexibility of adding multiple mandatory configures requested on BIG-IP that not exposed by OpenShift Routes API or annotations 
+
+**Global ConfigMap**
+
+```
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: global-cm
+  namespace: default
+  labels:
+    f5nr: "true"
+data:
+  extendedSpec: |
+    extendedRouteSpec:
+    - namespace: cafeone
+      vserverAddr: 10.192.125.65
+      vserverName: cafeone
+      allowOverride: true
+      policyCR: default/policy-cafe ----- reference to PolicyCRD
+    - namespace: cafetwo
+      vserverAddr: 10.192.125.66
+      vserverName: cafetwo
+      allowOverride: true
+      policyCR: default/policy-cafe ----- reference to PolicyCRD
+```
+
+**PolicyCRD**
+
+```
+apiVersion: cis.f5.com/v1
+kind: Policy
+metadata: 
+  labels: 
+    f5cr: "true"
+  name: policy-cafe
+  namespace: default
+spec:
+  l7Policies:
+    waf: /Common/WAF_Policy
+  profiles: 
+    logProfiles: 
+      - /Common/Log all requests
+```
+
+**Note** CIS CRD schema is required
+
+Create PolicyCRD
+
+```
+# oc create -f policy-cafe.yaml
+```
+
+PolicyCRD [repo](https://github.com/mdditt2000/openshift-4-11/blob/main/next-gen-routes-2-11/ocp-route/cafeone/crd/policy-cafe.yaml)
+
+Validate WAF Policy on the BIG-IP
+
+![WAF](https://github.com/mdditt2000/openshift-4-11/blob/main/next-gen-routes-2-11/diagram/2022-12-06_17-39-38.png)

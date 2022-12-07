@@ -121,17 +121,41 @@ Routes [repo](https://github.com/mdditt2000/openshift-4-11/tree/main/next-gen-ro
 
 Validate OpenShift Routes for cafeone
 
-![openshift](https://github.com/mdditt2000/openshift-4-9/blob/main/next-gen-routes/diagram/2022-06-07_15-35-21.png)
+![openshift](https://github.com/mdditt2000/openshift-4-11/blob/main/next-gen-routes-2-11/diagram/2022-12-06_16-49-29.png)
 
-Validate OpenShift Virtual IP using the BIG-IP
+Validate OpenShift Virtual IPs for **cafeone** and **cafetwo** using the BIG-IP
 
-![big-ip pools](https://github.com/mdditt2000/openshift-4-9/blob/main/next-gen-routes/diagram/2022-06-07_15-37-33.png)
+![big-ip](https://github.com/mdditt2000/openshift-4-11/blob/main/next-gen-routes-2-11/diagram/2022-12-06_16-50-18.png)
 
-Validate OpenShift Routes policies on the BIG-IP
+### Step 4: Creating Wide-IPs on GTM
 
-![traffic](https://github.com/mdditt2000/openshift-4-9/blob/main/next-gen-routes/diagram/2022-06-07_15-38-08.png)
+* AS3-40 is a requirement
+* Create DataCenter and Server in the Common partition
+* VirtualServer Discovery is required
 
-Validate OpenShift Routes policies by connecting to the Public IP
+In this example I created the GTM global objects using AS3
 
-![traffic](https://github.com/mdditt2000/openshift-4-9/blob/main/next-gen-routes/diagram/2022-06-07_15-38-33.png)
+![AS3](https://github.com/mdditt2000/openshift-4-11/blob/main/next-gen-routes-2-11/bigip-gslb-common/bigip-gslb-common.json)
+
+Create Wide-IP for **cafeone.example.com**
+
+```
+# oc create -f edns-cafeone.yaml
+externaldns.cis.f5.com/edns-cafe created
+```
+
+![GTM](https://github.com/mdditt2000/openshift-4-11/tree/main/next-gen-routes-2-11/ocp-route/cafeone/crd)
+
+Create Wide-IP for **cafetwo.example.com**
+
+```
+# oc create -f edns-cafetwo.yaml
+externaldns.cis.f5.com/edns-cafe created
+```
+
+![GTM](https://github.com/mdditt2000/openshift-4-11/tree/main/next-gen-routes-2-11/ocp-route/cafetwo/crd)
+
+Validate Wide-IPs on the BIG-IP
+
+![WIDE-IP](https://github.com/mdditt2000/openshift-4-11/blob/main/next-gen-routes-2-11/diagram/2022-12-06_17-03-01.png)
 

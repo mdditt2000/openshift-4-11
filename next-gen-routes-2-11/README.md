@@ -4,7 +4,7 @@ This document demonstrates how F5 Controller Ingress Services (CIS) can advance 
 
 In this example we are using multiple hosts **cafeone** and **cafetwo** with three endpoints; **tea,coffee and mocha** as shown in the diagram below. Wide-IPs for Hosts **cafeone.example.com** and **cafetwo.example.com** are created on F5 GTM using ExternalDNS CRDs. All application will be protected using F5 WAF. All the Routes, ExternalDNS and WAF is configured from OpenShift.
 
-![architecture]()
+![architecture](https://github.com/mdditt2000/openshift-4-11/blob/main/next-gen-routes-2-11/diagram/2022-12-06_15-50-57.png)
 
 Demo on YouTube [video]()
 

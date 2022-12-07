@@ -1,10 +1,10 @@
-# Next Generation OpenShift Routes 
+# Advancing OpenShift Routes using ExternalDNS and WAF
 
-This document demonstrates a new feature for OpenShift Routes using F5 Controller Ingress Services (CIS) called **Next Generation Routes Controller**. Next Generation Routes Controller extended F5 CIS to use multiple Virtual IP addresses. Before F5 CIS could only manage one Virtual IP address per CIS instance. 
+This document demonstrates how F5 Controller Ingress Services (CIS) can advance OpenShift Routes. F5 CIS can expand the OpenShift Route API to use multiple Public IP addresses per Host. Without F5 CIS, OpenShift Route API only manage one Public IP address. 
 
-In this example we are using a **cafe** and **cafenew** application with three endpoints; **tea,coffee and mocha** and **multiple namespace** as shown in the diagram below. 
+In this example we are using multiple hosts **cafeone** and **cafetwo** with three endpoints; **tea,coffee and mocha** as shown in the diagram below. Wide-IPs for Hosts **cafeone.example.com** and **cafetwo.example.com** are created on F5 GTM using ExternalDNS CRDs. All application will be protected using F5 WAF. All the Routes, ExternalDNS and WAF is configured from OpenShift.
 
-![architecture](https://github.com/mdditt2000/openshift-4-9/blob/main/next-gen-routes/diagram/2022-06-08_11-09-57.png)
+![architecture]()
 
 Demo on YouTube [video]()
 

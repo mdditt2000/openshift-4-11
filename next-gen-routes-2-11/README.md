@@ -60,8 +60,8 @@ Using Global ConfigMap
 * Global ConfigMap provides control to the admin to create and maintain the resource configuration centrally like Public IPs, Policies, Certificates etc
 * RBAC can be used to restrict modification of global ConfigMap by users with tenant level access
 
-* namespace: cafeone, vserverAddr: 10.192.125.65
-* namespace: cafetwo, vserverAddr: 10.192.125.66
+* namespace: cafeone, vserverAddr: **10.192.125.65**
+* namespace: cafetwo, vserverAddr: **10.192.125.66**
 
 ```
 apiVersion: v1
@@ -135,7 +135,7 @@ Validate OpenShift Virtual IPs for **cafeone** and **cafetwo** using the BIG-IP
 
 In this example I created the GTM global objects using AS3
 
-![AS3](https://github.com/mdditt2000/openshift-4-11/blob/main/next-gen-routes-2-11/bigip-gslb-common/bigip-gslb-common.json)
+AS3 [repo](https://github.com/mdditt2000/openshift-4-11/blob/main/next-gen-routes-2-11/bigip-gslb-common/bigip-gslb-common.json)
 
 Create Wide-IP for **cafeone.example.com**
 
@@ -144,7 +144,7 @@ Create Wide-IP for **cafeone.example.com**
 externaldns.cis.f5.com/edns-cafe created
 ```
 
-![GTM](https://github.com/mdditt2000/openshift-4-11/tree/main/next-gen-routes-2-11/ocp-route/cafeone/crd)
+ExternalDNS [repo](https://github.com/mdditt2000/openshift-4-11/tree/main/next-gen-routes-2-11/ocp-route/cafeone/crd)
 
 Create Wide-IP for **cafetwo.example.com**
 
@@ -153,7 +153,7 @@ Create Wide-IP for **cafetwo.example.com**
 externaldns.cis.f5.com/edns-cafe created
 ```
 
-![GTM](https://github.com/mdditt2000/openshift-4-11/tree/main/next-gen-routes-2-11/ocp-route/cafetwo/crd)
+ExternalDNS [repo](https://github.com/mdditt2000/openshift-4-11/tree/main/next-gen-routes-2-11/ocp-route/cafetwo/crd)
 
 Validate Wide-IPs on the BIG-IP
 

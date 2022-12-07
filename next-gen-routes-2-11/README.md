@@ -1,18 +1,18 @@
 # Advancing OpenShift Routes using ExternalDNS and WAF
 
-This document demonstrates how F5 Controller Ingress Services (CIS) can advance OpenShift Routes. F5 CIS can expand the OpenShift Route API to use multiple Public IP addresses per Host. Without F5 CIS, OpenShift Route API only manage one Public IP address. 
+This document demonstrates how F5 Controller Ingress Services (CIS) can advance OpenShift Routes. F5 CIS can expand the OpenShift Route API to use multiple Public IP addresses per Host. Without F5 CIS, OpenShift Route API can only manage one Public IP address. 
 
-In this example we are using multiple hosts **cafeone** and **cafetwo** with three endpoints; **tea,coffee and mocha** as shown in the diagram below. Wide-IPs for Hosts **cafeone.example.com** and **cafetwo.example.com** are created on F5 GTM using ExternalDNS CRDs. All application will be protected using F5 WAF. All the Routes, ExternalDNS and WAF is configured from OpenShift.
+In this example we are using multiple hosts **cafeone** and **cafetwo** with three endpoints; **tea,coffee and mocha** as shown in the diagram below. Wide-IPs for Hosts **cafeone.example.com** and **cafetwo.example.com** are created on F5 GTM using ExternalDNS CRDs. All application will be protected using F5 WAF. All the Routes, ExternalDNS and WAF is managed from the OpenShift API.
 
 ![architecture](https://github.com/mdditt2000/openshift-4-11/blob/main/next-gen-routes-2-11/diagram/2022-12-06_15-50-57.png)
 
 Demo on YouTube [video]()
 
-## Using OpenShift Route
+## Using CIS Next Generation OpenShift Route
 
 ### Step 1: Deploy CIS
 
-Currently in CIS 2.8.1 only one **Public IP**, **Virtual Server** for BIG-IP can be configured for all Routes. Routes uses HOST Header Load balancing to determine the backend application. In this first example the backend is **/tea,/coffee and /mocha** using hostname **cafe.example.com** with **Virtual IP Address 10.192.125.65**
+OpenShift Route API using HAproxy which can only support one **Public IP**, **Virtual Server** per BIG-IP which is configured for all Routes. Routes uses HOST Header Load balancing to determine the backend application. However CIS can resolve this issue by using a Global ConfigMap to specify global objects like IPs etc. This is similar to how Gateway API will work. The Global ConfigMap can be applied in a different namespace than the Routes
 
 Next Generation Routes Controller uses extended ConfigMap, allowing the user to create multiple Virtual IP addresses for OpenShift Routes. Support for multi-partition is also available. Each namespace will be managed in a dedicated partition/tenant on BIG-IP
 

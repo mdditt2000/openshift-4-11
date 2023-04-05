@@ -50,6 +50,7 @@ spec:
               "--log-level=DEBUG",
               "--insecure=true",
               "--static-routing-mode=true",
+              "--orchestration-cni=ovn-k8s",
               "--route-spec-configmap=default/global-cm",
               "--controller-mode=openshift",
               "--as3-validation=true",

@@ -1,4 +1,4 @@
-# Expanding F5 BIG-IP Integration with OpenShift using CIS to Dynamically Setup CNI 
+# F5 BIG-IP Integration with OpenShift using CIS to Dynamically Setup CNI 
 
 This document expands on [OpenShift OVN-Kubernetes using F5 BIG-IP HA with NO Tunnels](https://github.com/mdditt2000/k8s-bigip-ctlr/tree/main/user_guides/ovn-kubernetes-ha#readme) using OVN-Kubernetes with F5 BIG-IP where CIS is dynamically adding the static routes
 

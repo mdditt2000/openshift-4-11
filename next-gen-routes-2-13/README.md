@@ -1,6 +1,8 @@
 # F5 BIG-IP Integration with OpenShift using F5 CIS to Configure Network
 
-This document expands on [OpenShift OVN-Kubernetes using F5 BIG-IP HA with NO Tunnels](https://github.com/mdditt2000/k8s-bigip-ctlr/tree/main/user_guides/ovn-kubernetes-ha#readme) using OVN-Kubernetes with F5 BIG-IP where CIS is dynamically adding the static routes
+**Note**: This demo and document is only for gathering feedback and making possible changes for CIS 2.13. This is a pre-release and not for production use
+
+This document expands on [OpenShift OVN-Kubernetes using F5 BIG-IP HA with NO Tunnels](https://github.com/mdditt2000/k8s-bigip-ctlr/tree/main/user_guides/ovn-kubernetes-ha#readme) where CIS dynamically configures BIG-IP with network routes of the OpenShift Cluster. This feature simplifies BIG-IP administrators work when OpenShift nodes are adding or removed. 
 
 ![architecture](https://github.com/mdditt2000/openshift-4-11/blob/main/next-gen-routes-2-13/diagram/2023-04-05_10-31-46.png)
 
@@ -10,14 +12,10 @@ Demo on YouTube [video]()
 
 ### Step 1: Deploy CIS
 
-Currently OpenShift Route API using HAproxy which can only support one **Public IP**, **Virtual Server** per BIG-IP. Routes uses HOST Header Load balancing to determine the backend application. CIS can resolve this issue by using a Global ConfigMap to specify global objects like IPs, Policies etc. This is similar to how Gateway API will work. The Global ConfigMap can be applied in different namespace than the Routes
+Add the following additional parameters to the CIS deployment
 
-Add the following parameters to the CIS deployment
-
-* Global ConfigMap info is passed to CIS with argument --route-spec-configmap="namespace/configmap-name"
-* Controller mode should be set to openshift to enable multiple VIP support(--controller-mode="openshift")
-* Using AS3 API to post ExternalDNS configuration --cccl-gtm-agent=false
-* Using OVN Kubernetes with static routes. No CNI configured
+* Create static routes on BIG-IP  --static-routing-mode=true
+* Using OVN-Kubernetes --orchestration-cni=ovn-k8s
 
 ```
 args: [
@@ -36,9 +34,10 @@ args: [
     "--insecure=true",
     "--route-spec-configmap=default/global-cm",
     "--controller-mode=openshift",
+    "--static-routing-mode=true",
+    "--orchestration-cni=ovn-k8s",
     "--as3-validation=true",
     "--log-as3-response=true",
-    "--cccl-gtm-agent=false",
 ```
 
 Deploy CIS in OpenShift
@@ -49,181 +48,24 @@ oc create -f bigip-ctlr-clusterrole.yaml
 oc create -f f5-bigip-ctlr-deployment.yaml
 ```
 
-CIS [repo](https://github.com/mdditt2000/openshift-4-11/tree/main/next-gen-routes-2-11/cis)
+CIS [repo](https://github.com/mdditt2000/openshift-4-11/blob/main/next-gen-routes-2-13/cis/f5-bigip-ctlr-deployment.yaml)
 
-### Step 2: Deploy Global ConfigMap
+### Step 2: Validate Network Routes Created on BIG-IP
 
-Using Global ConfigMap
-
-* Global ConfigMap provides control to the admin to create and maintain the resource configuration centrally like Public IPs, Policies, Certificates etc
-* RBAC can be used to restrict modification of global ConfigMap by users with tenant level access
-
-* namespace: cafeone, vserverAddr: **10.192.125.65**
-* namespace: cafetwo, vserverAddr: **10.192.125.66**
+CIS creates the network routes under the Application Tenant on BIG-IP. CIS will also log the creation of the routes in the logs
 
 ```
-apiVersion: v1
-kind: ConfigMap
-metadata:
-  name: global-cm
-  namespace: default
-  labels:
-    f5nr: "true"
-data:
-  extendedSpec: |
-    extendedRouteSpec:
-    - namespace: cafeone
-      vserverAddr: 10.192.125.65
-      vserverName: cafeone
-      allowOverride: true
-      policyCR: default/policy-cafe
-    - namespace: cafetwo
-      vserverAddr: 10.192.125.66
-      vserverName: cafetwo
-      allowOverride: true
-      policyCR: default/policy-cafe
+2023/04/05 17:11:40 [DEBUG] [2023-04-05 17:11:40,829 f5_cccl.service.manager DEBUG] Getting route tasks...
+2023/04/05 17:11:40 [DEBUG] [2023-04-05 17:11:40,829 root DEBUG] desired set is {'k8s-route-10.192.125.169', 'k8s-route-10.192.125.170', 'k8s-route-10.192.125.174', 'k8s-route-10.192.125.171', 'k8s-route-10.192.125.172', 'k8s-route-10.192.125.177'}
+2023/04/05 17:11:40 [DEBUG] [2023-04-05 17:11:40,829 root DEBUG] existing set is {'k8s-route-10.192.125.169', 'k8s-route-10.192.125.170', 'k8s-route-10.192.125.171', 'k8s-route-10.192.125.174', 'k8s-route-10.192.125.172', 'k8s-route-10.192.125.177'}
+2023/04/05 17:11:40 [DEBUG] [2023-04-05 17:11:40,829 f5_cccl.service.manager DEBUG] Getting arp tasks...
+2023/04/05 17:11:40 [DEBUG] [2023-04-05 17:11:40,829 root DEBUG] desired set is set()
+2023/04/05 17:11:40 [DEBUG] [2023-04-05 17:11:40,829 root DEBUG] existing set is set()
+2023/04/05 17:11:40 [DEBUG] [2023-04-05 17:11:40,829 f5_cccl.service.manager DEBUG] Getting tunnel tasks...
+2023/04/05 17:11:40 [DEBUG] [2023-04-05 17:11:40,829 root DEBUG] desired set is set()
+2023/04/05 17:11:40 [DEBUG] [2023-04-05 17:11:40,829 root DEBUG] existing set is set()
 ```
 
-Deploy global ConfigMap
+No ARP, or VXLAN tunnels required
 
-```
-oc create -f global-cm.yaml
-```
-
-### Step 3: Creating OpenShift Routes for cafe.example.com
-
-User-case for the OpenShift Routes:
-
-- Edge Termination
-- Backend listening on PORT 8080
-- Wide-IP configured to GTM
-- WAF, logging policies applied to Virtual IP via PolicyCR
-
-Create OpenShift Routes for **cafeone.example.com**
-
-```
-oc create -f route-tea-edge.yaml
-oc create -f route-coffee-edge.yaml
-oc create -f route-mocha-edge.yaml
-```
-Routes [repo](https://github.com/mdditt2000/openshift-4-11/tree/main/next-gen-routes-2-11/ocp-route/cafeone/route)
-
-Create OpenShift Routes for **cafetwo.example.com**
-
-```
-oc create -f route-tea-edge.yaml
-oc create -f route-coffee-edge.yaml
-oc create -f route-mocha-edge.yaml
-```
-Routes [repo](https://github.com/mdditt2000/openshift-4-11/tree/main/next-gen-routes-2-11/ocp-route/cafetwo/route)
-
-Validate OpenShift Routes for cafeone
-
-![openshift](https://github.com/mdditt2000/openshift-4-11/blob/main/next-gen-routes-2-11/diagram/2022-12-06_16-49-29.png)
-
-Validate OpenShift Virtual IPs for **cafeone** and **cafetwo** using the BIG-IP
-
-![big-ip](https://github.com/mdditt2000/openshift-4-11/blob/main/next-gen-routes-2-11/diagram/2022-12-06_16-50-18.png)
-
-### Step 4: Creating Wide-IPs on GTM
-
-* AS3-40 is a requirement
-* Create DataCenter and Server in the Common partition
-* VirtualServer Discovery is required
-
-In this example I created the GTM global objects using AS3
-
-AS3 [repo](https://github.com/mdditt2000/openshift-4-11/blob/main/next-gen-routes-2-11/bigip-gslb-common/bigip-gslb-common.json)
-
-Create Wide-IP for **cafeone.example.com**
-
-```
-# oc create -f edns-cafeone.yaml
-externaldns.cis.f5.com/edns-cafe created
-```
-
-ExternalDNS [repo](https://github.com/mdditt2000/openshift-4-11/tree/main/next-gen-routes-2-11/ocp-route/cafeone/crd)
-
-Create Wide-IP for **cafetwo.example.com**
-
-```
-# oc create -f edns-cafetwo.yaml
-externaldns.cis.f5.com/edns-cafe created
-```
-
-ExternalDNS [repo](https://github.com/mdditt2000/openshift-4-11/tree/main/next-gen-routes-2-11/ocp-route/cafetwo/crd)
-
-Validate Wide-IPs on the BIG-IP
-
-![WIDE-IP](https://github.com/mdditt2000/openshift-4-11/blob/main/next-gen-routes-2-11/diagram/2022-12-06_17-03-01.png)
-
-### Step 4: Enable WAF Protection for the OpenShift Cluster
-
-Global ConfigMap allows for Policies to be associated to the routes. In my example both hosts **cafeone** and **cafetwo**  are using the same WAF policies. CIS uses AS3 simply references and existing policy on BIG-IP. Logging of all request is also enabled. The PolicyCRD provides flexibility of adding multiple mandatory configures requested on BIG-IP that not exposed by OpenShift Routes API or annotations 
-
-**Global ConfigMap**
-
-```
-apiVersion: v1
-kind: ConfigMap
-metadata:
-  name: global-cm
-  namespace: default
-  labels:
-    f5nr: "true"
-data:
-  extendedSpec: |
-    extendedRouteSpec:
-    - namespace: cafeone
-      vserverAddr: 10.192.125.65
-      vserverName: cafeone
-      allowOverride: true
-      policyCR: default/policy-cafe ----- reference to PolicyCRD
-    - namespace: cafetwo
-      vserverAddr: 10.192.125.66
-      vserverName: cafetwo
-      allowOverride: true
-      policyCR: default/policy-cafe ----- reference to PolicyCRD
-```
-
-**PolicyCRD**
-
-```
-apiVersion: cis.f5.com/v1
-kind: Policy
-metadata: 
-  labels: 
-    f5cr: "true"
-  name: policy-cafe
-  namespace: default
-spec:
-  l7Policies:
-    waf: /Common/WAF_Policy
-  profiles: 
-    logProfiles: 
-      - /Common/Log all requests
-```
-
-**Note** CIS CRD schema is required
-
-Create PolicyCRD
-
-```
-# oc create -f policy-cafe.yaml
-```
-
-PolicyCRD [repo](https://github.com/mdditt2000/openshift-4-11/blob/main/next-gen-routes-2-11/ocp-route/cafeone/crd/policy-cafe.yaml)
-
-Validate WAF Policy on the BIG-IP
-
-![WAF](https://github.com/mdditt2000/openshift-4-11/blob/main/next-gen-routes-2-11/diagram/2022-12-06_17-39-38.png)
-
-### Step 5: Prevent Malicious traffic from OpenShift Cluster
-
-Enable a XSS attacks and make sure WAF blocks the Malicious traffic
-
-![WAF](https://github.com/mdditt2000/openshift-4-11/blob/main/next-gen-routes-2-11/diagram/2022-12-06_17-45-12.png)
-
-Validate Request Logging on BIG-IP 
-
-![Block](https://github.com/mdditt2000/openshift-4-11/blob/main/next-gen-routes-2-11/diagram/2022-12-06_17-50-16.png)
+![routes](https://github.com/mdditt2000/openshift-4-11/blob/main/next-gen-routes-2-13/diagram/2023-04-05_10-45-48.png)

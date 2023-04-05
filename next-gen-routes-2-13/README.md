@@ -1,10 +1,8 @@
-# Advancing OpenShift Routes using ExternalDNS and WAF
+# Expanding F5 BIG-IP Integration with OpenShift using CIS to Dynamically Setup CNI 
 
-This document demonstrates how F5 Controller Ingress Services (CIS) can advance OpenShift Routes. F5 CIS can expand the OpenShift Route API to use multiple Public IP addresses per Host. Without F5 CIS, OpenShift Route API can only manage one Public IP address. 
+This document expands on [OpenShift OVN-Kubernetes using F5 BIG-IP HA with NO Tunnels](https://github.com/mdditt2000/k8s-bigip-ctlr/tree/main/user_guides/ovn-kubernetes-ha#readme) using OVN-Kubernetes with F5 BIG-IP where CIS is dynamically adding the static routes
 
-In this example we are using multiple hosts **cafeone** and **cafetwo** with three endpoints; **tea,coffee and mocha** as shown in the diagram below. Wide-IPs for Hosts **cafeone.example.com** and **cafetwo.example.com** are created on F5 GTM using ExternalDNS CRDs. All application will be protected using F5 WAF. All the Routes, ExternalDNS and WAF is managed from the OpenShift API.
-
-![architecture](https://github.com/mdditt2000/openshift-4-11/blob/main/next-gen-routes-2-11/diagram/2022-12-06_15-50-57.png)
+![architecture]()
 
 Demo on YouTube [video]()
 

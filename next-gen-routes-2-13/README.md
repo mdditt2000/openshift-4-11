@@ -2,7 +2,7 @@
 
 This document expands on [OpenShift OVN-Kubernetes using F5 BIG-IP HA with NO Tunnels](https://github.com/mdditt2000/k8s-bigip-ctlr/tree/main/user_guides/ovn-kubernetes-ha#readme) using OVN-Kubernetes with F5 BIG-IP where CIS is dynamically adding the static routes
 
-![architecture]()
+![architecture](https://github.com/mdditt2000/openshift-4-11/blob/main/next-gen-routes-2-13/diagram/2023-04-05_10-31-46.png)
 
 Demo on YouTube [video]()
 

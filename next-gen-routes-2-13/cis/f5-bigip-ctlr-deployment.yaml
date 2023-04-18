@@ -17,8 +17,8 @@ spec:
       # Name of the Service Account bound to a Cluster Role with the required
       # permissions
       containers:
-        - name: k8s-bigip-ctlr
-          image: lavanyasirigudi/k8s-bigip-ctlr:stat_supp_7
+        - name: redhat
+          image: quay.io/f5networks/k8s-bigip-ctlr-devel:8dfe2680fff1864acf38c90c425224c61ae21b01
           env:
             - name: BIGIP_USERNAME
               valueFrom:

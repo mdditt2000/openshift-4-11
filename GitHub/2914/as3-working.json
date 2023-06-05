@@ -1,0 +1,158 @@
+{
+    "$schema": "https://raw.githubusercontent.com/F5Networks/f5-appsvcs-extension/master/schema/3.33.0/as3-schema-3.33.0-4.json",
+    "class": "AS3",
+    "declaration": {
+        "class": "ADC",
+        "controls": {
+            "class": "Controls",
+            "userAgent": "CIS/v2.13.0 K8S/v1.20.12+vmware.1"
+        },
+        "dev-nonprod-k8s-cis": {
+            "Shared": {
+                "class": "Application",
+                "crd_10_2_2_1_5672": {
+                    "class": "Service_TCP",
+                    "virtualAddresses": [
+                        "10.2.2.1"
+                    ],
+                    "virtualPort": 5672,
+                    "snat": "auto",
+                    "pool": "rabbitmq_cluster_5672_rabbitmq",
+                    "profileL4": "basic"
+                },
+                "rabbitmq_cluster_5672_rabbitmq": {
+                    "class": "Pool",
+                    "members": [
+                        {
+                            "addressDiscovery": "static",
+                            "serverAddresses": [
+                                "172.17.68.51"
+                            ],
+                            "shareNodes": true
+                        },
+                        {
+                            "addressDiscovery": "static",
+                            "serverAddresses": [
+                                "172.17.68.53"
+                            ],
+                            "shareNodes": true
+                        },
+                        {
+                            "addressDiscovery": "static",
+                            "serverAddresses": [
+                                "172.17.68.52"
+                            ],
+                            "shareNodes": true
+                        },
+                        {
+                            "addressDiscovery": "static",
+                            "serverAddresses": [
+                                "172.17.68.62"
+                            ],
+                            "shareNodes": true
+                        },
+                        {
+                            "addressDiscovery": "static",
+                            "serverAddresses": [
+                                "172.17.68.59"
+                            ],
+                            "shareNodes": true
+                        },
+                        {
+                            "addressDiscovery": "static",
+                            "serverAddresses": [
+                                "172.17.68.34"
+                            ],
+                            "shareNodes": true
+                        },
+                        {
+                            "addressDiscovery": "static",
+                            "serverAddresses": [
+                                "172.17.68.39"
+                            ],
+                            "shareNodes": true
+                        },
+                        {
+                            "addressDiscovery": "static",
+                            "serverAddresses": [
+                                "172.17.68.32"
+                            ],
+                            "shareNodes": true
+                        },
+                        {
+                            "addressDiscovery": "static",
+                            "serverAddresses": [
+                                "172.17.68.38"
+                            ],
+                            "shareNodes": true
+                        },
+                        {
+                            "addressDiscovery": "static",
+                            "serverAddresses": [
+                                "172.17.68.57"
+                            ],
+                            "shareNodes": true
+                        },
+                        {
+                            "addressDiscovery": "static",
+                            "serverAddresses": [
+                                "172.17.68.54"
+                            ],
+                            "shareNodes": true
+                        },
+                        {
+                            "addressDiscovery": "static",
+                            "serverAddresses": [
+                                "172.17.68.40"
+                            ],
+                            "shareNodes": true
+                        },
+                        {
+                            "addressDiscovery": "static",
+                            "serverAddresses": [
+                                "172.17.68.41"
+                            ],
+                            "shareNodes": true
+                        },
+                        {
+                            "addressDiscovery": "static",
+                            "serverAddresses": [
+                                "172.17.68.18"
+                            ],
+                            "shareNodes": true
+                        },
+                        {
+                            "addressDiscovery": "static",
+                            "serverAddresses": [
+                                "172.17.68.49"
+                            ],
+                            "shareNodes": true
+                        }
+                    ],
+                    "monitors": [
+                        {
+                            "use": "/dev-nonprod-k8s-cis/Shared/rabbitmq_cluster_rabbitmq_tcp_5672"
+                        }
+                    ]
+                },
+                "rabbitmq_cluster_rabbitmq_tcp_5672": {
+                    "class": "Monitor",
+                    "interval": 10,
+                    "monitorType": "tcp",
+                    "targetAddress": "",
+                    "timeout": 10,
+                    "adaptive": false,
+                    "receive": "",
+                    "send": ""
+                },
+                "template": "shared"
+            },
+            "class": "Tenant",
+            "defaultRouteDomain": 0
+        },
+        "id": "urn:uuid:85626792-9ee7-46bb-8fc8-4ba708cfdc1d",
+        "label": "CIS Declaration",
+        "remark": "Auto-generated by CIS",
+        "schemaVersion": "3.33.0"
+    }
+}

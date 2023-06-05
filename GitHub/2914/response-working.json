@@ -1,0 +1,14 @@
+{
+    "id": "1b3af056-ed93-4286-916f-d52add587e49",
+    "results": [
+        {
+            "code": 422,
+            "errors": [
+                "/dev-nonprod-k8s-cis/Shared/rabbitmq_cluster_5672_rabbitmq/members/0: should have required property 'servicePort'"
+            ],
+            "declarationFullId": "",
+            "message": "declaration is invalid"
+        }
+    ],
+    "declaration": {}
+}

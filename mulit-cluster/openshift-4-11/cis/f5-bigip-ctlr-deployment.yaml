@@ -17,8 +17,8 @@ spec:
       # Name of the Service Account bound to a Cluster Role with the required
       # permissions
       containers:
-        - name: cntr-ingress-svcs
-          image: registry.connect.redhat.com/f5networks/cntr-ingress-svcs:latest
+        - name: k8s-bigip-ctlr
+          image: mdditt2000/k8s-bigip-ctlr:MCLatest
           env:
             - name: BIGIP_USERNAME
               valueFrom:
@@ -47,8 +47,6 @@ spec:
               "--pool-member-type=cluster",
               "--log-level=DEBUG",
               "--insecure=true",
-              "--route-spec-configmap=kube-system/global-spec-config-for-multicluster",
-              "--cis-type=primary",
               "--controller-mode=openshift",
               "--as3-validation=true",
               "--log-as3-response=true",

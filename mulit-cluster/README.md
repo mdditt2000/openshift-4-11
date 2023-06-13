@@ -25,9 +25,6 @@ where /roo/kubeconfig is /openshift/ipi/ipi/ipi/auth/kubeconfig
 
 https://github.com/F5Networks/k8s-bigip-ctlr/blob/multiCluster/docs/config_examples/multicluster/rbac/kube-config-secret-example.yaml
 
-```
-Here is the latest MultiCluster Image : docker.io/nandakishoref5/k8s-bigip-ctlr:MCLatest , Will share you the final codefreeze image once all fixes are done. 
-```
 
 ```
 # Run the following command to create the secret using the cluster's kube-config file

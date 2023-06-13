@@ -1,7 +1,7 @@
 ## OpenShift Multi-cluster demo
 
 ```
-This will work, pls make sure you can retreive resource using "oc --kubeconfig=/openshift/ipi/ipi/ipi/auth/kubeconfig get nodes "
+This will work, pls make sure you can retrieve resource using "oc --kubeconfig=/openshift/ipi/ipi/ipi/auth/kubeconfig get nodes "
 ```
 
 ```
@@ -21,6 +21,4 @@ Here is the latest MultiCluster Image : docker.io/nandakishoref5/k8s-bigip-ctlr:
 # kubectl create secret generic kubeconfig1 --from-file=kubeconfig=kube-config1.yaml
 ```
 
-```
-Here is the latest documentation of MultiCluster: https://github.com/F5Networks/k8s-bigip-ctlr/tree/multiCluster/docs/config_examples/multicluster
-```
+[Latest Documentation of Multi-Cluster](https://github.com/F5Networks/k8s-bigip-ctlr/tree/multiCluster/docs/config_examples/multicluster)

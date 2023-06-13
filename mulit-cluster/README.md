@@ -1,4 +1,8 @@
-## OpenShift Multi-cluster demo
+## OpenShift Multi-Cluster
+
+This document demonstrates OpenShift Multi-Cluster using F5 BIG-IP. This document focuses on **standalone deployment**. Container Ingress Services (CIS) is only deployed in one of the OpenShift clusters as shown in the diagram
+
+
 
 ```
 This will work, pls make sure you can retrieve resource using "oc --kubeconfig=/openshift/ipi/ipi/ipi/auth/kubeconfig get nodes "

@@ -47,8 +47,6 @@ spec:
               "--pool-member-type=cluster",
               "--log-level=DEBUG",
               "--insecure=true",
-              "--static-routing-mode=true",
-              "--orchestration-cni=ovn-k8s",
               "--route-spec-configmap=kube-system/global-spec-config-for-multicluster",
               "--cis-type=primary",
               "--controller-mode=openshift",

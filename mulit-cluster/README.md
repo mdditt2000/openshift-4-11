@@ -4,6 +4,16 @@ This document demonstrates OpenShift Multi-Cluster using F5 BIG-IP. This documen
 
 ![architecture](https://github.com/mdditt2000/openshift-4-11/blob/main/mulit-cluster/diagram/2023-06-13_13-20-02.png)
 
+## Why OpenShift Multi-Cluster
+
+My environment has two cluster OpenShift 4.11 and newly installed OpenShift 4.13. I would like to distribute traffic between the two cluster before taking the OpenShift 4.11 offline to upgrade or rebuild without traffic disruption. Since OpenShift 4.13 is the latest version, I would continue to run CIS on OpenShift 4.11 until satisfied with the newer OpensShift version. Moving CIS to OpenShift 4.13 is relatively simple. Another option is run Active/active CIS which is covered in the next document
+
+#### Step 1 Fetch KubeConfigs from ConfigMaps for ExternalCluster
+
+Follow the documentation for [creating cluster secrets](https://github.com/F5Networks/k8s-bigip-ctlr/tree/multiCluster/docs/config_examples/multicluster/rbac)
+
+
+
 ```
 This will work, pls make sure you can retrieve resource using "oc --kubeconfig=/openshift/ipi/ipi/ipi/auth/kubeconfig get nodes "
 ```

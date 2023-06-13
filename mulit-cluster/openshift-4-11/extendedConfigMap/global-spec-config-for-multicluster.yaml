@@ -1,0 +1,21 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  labels:
+    f5nr: "true"
+  name: global-spec-config
+  namespace: kube-system
+data:
+  extendedSpec: |
+    multiClusterConfigs:
+    - clusterName: cluster1
+      secret: default/kubeconfig1
+    - clusterName: cluster2
+      secret: default/kubeconfig2
+    extendedRouteSpec:
+    - allowOverride: false
+      namespace: cafeone
+      vserverAddr: 10.192.125.65
+      vserverName: cafeone
+      allowOverride: true
+      policyCR: default/policy-cafe

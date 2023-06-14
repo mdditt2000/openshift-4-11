@@ -12,15 +12,20 @@ My environment has two cluster OpenShift 4.11 and newly installed OpenShift 4.13
 
 Follow the documentation for [creating cluster secrets](https://github.com/F5Networks/k8s-bigip-ctlr/tree/multiCluster/docs/config_examples/multicluster/rbac)
 
-
-
-```
-This will work, pls make sure you can retrieve resource using "oc --kubeconfig=/openshift/ipi/ipi/ipi/auth/kubeconfig get nodes "
-```
+**OpenShift-4-11 Cluster**
 
 ```
-oc create secret generic cluster-1 --from-file=kubeconfig=/root/kubeconfig
-where /roo/kubeconfig is /openshift/ipi/ipi/ipi/auth/kubeconfig
+# oc create secret generic openshift-4-11 --from-file=kubeconfig=/openshift/ipi/auth/kubeconfig
+secret/openshift-4-11 created
+
+```
+
+**OpenShift-4-13 Cluster**
+
+```
+# oc create secret generic openshift-4-13 --from-file=/openshift/ipi/ipi/ipi/auth/kubeconfig
+secret/openshift-4-13 created
+
 ```
 
 https://github.com/F5Networks/k8s-bigip-ctlr/blob/multiCluster/docs/config_examples/multicluster/rbac/kube-config-secret-example.yaml

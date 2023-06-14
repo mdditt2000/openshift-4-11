@@ -18,7 +18,7 @@ spec:
       # permissions
       containers:
         - name: k8s-bigip-ctlr
-          image: mdditt2000/k8s-bigip-ctlr:MCLatest
+          image: docker.io/nandakishoref5/k8s-bigip-ctlr:MCLatest
           env:
             - name: BIGIP_USERNAME
               valueFrom:
@@ -44,7 +44,10 @@ spec:
               "--bigip-url=10.192.125.60",
               "--bigip-partition=OpenShift",
               "--namespace=cafeone",
+              "--route-label=systest",
               "--pool-member-type=cluster",
+              "--controller-mode=openshift",
+              "--route-spec-configmap=kube-system/global-spec-config",
               "--log-level=DEBUG",
               "--insecure=true",
               "--as3-validation=true",

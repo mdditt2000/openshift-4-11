@@ -13,7 +13,7 @@ spec:
     metadata:
       creationTimestamp: null
       labels:
-        app: test-bigip-controller-1
+        app: k8s-bigip-ctlr-deployment
     spec:
       containers:
         - args:
@@ -45,6 +45,6 @@ spec:
             - /app/bin/k8s-bigip-ctlr
           image: docker.io/nandakishoref5/k8s-bigip-ctlr:mcMay
           imagePullPolicy: IfNotPresent
-          name: test-bigip-controller-1
+          name: k8s-bigip-ctlr-deployment
           resources: {}
           terminationMessagePath: /dev/termination-log

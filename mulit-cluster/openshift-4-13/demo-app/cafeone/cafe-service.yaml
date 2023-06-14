@@ -11,7 +11,7 @@ spec:
     port: 8080
     protocol: TCP
     targetPort: 8080
-  type: ClusterIP
+  type: NodePort
   selector:
     app: tea
 ---
@@ -28,7 +28,7 @@ spec:
     port: 8080
     protocol: TCP
     targetPort: 8080
-  type: ClusterIP
+  type: NodePort
   selector:
     app: coffee
 ---
@@ -45,6 +45,6 @@ spec:
     port: 8080
     protocol: TCP
     targetPort: 8080
-  type: ClusterIP
+  type: NodePort
   selector:
     app: mocha

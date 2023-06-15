@@ -46,7 +46,7 @@ spec:
               "--bigip-partition=OpenShift",
               "--namespace=cafeone",
               "--route-label=systest",
-              "--pool-member-type=cluster",
+              "--pool-member-type=nodeport",
               "--controller-mode=openshift",
               "--route-spec-configmap=kube-system/global-spec-config",
               "--log-level=DEBUG",

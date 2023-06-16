@@ -99,7 +99,6 @@ NAME         TYPE       CLUSTER-IP       EXTERNAL-IP   PORT(S)          AGE
 coffee-svc   NodePort   172.30.174.13    <none>        8080:31114/TCP   38h
 mocha-svc    NodePort   172.30.244.42    <none>        8080:30784/TCP   38h
 tea-svc      NodePort   172.30.114.100   <none>        8080:30549/TCP   38h
-
 ```
 
 #### Step 3 Deploy OpenShift Route
@@ -113,3 +112,5 @@ cafe-coffee-edge   cafeone.example.com ... 1 more   /coffee   coffee-svc   8080 
 cafe-mocha-edge    cafeone.example.com ... 1 more   /mocha    mocha-svc    8080                 None
 cafe-tea-edge      cafeone.example.com ... 1 more   /tea      tea-svc      8080                 None
 ```
+
+Cafe Route [repo](https://github.com/mdditt2000/openshift-4-11/tree/main/mulit-cluster/openshift-4-11/ocp-route/cafeone/nonsecure)

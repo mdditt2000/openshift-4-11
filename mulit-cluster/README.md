@@ -85,7 +85,7 @@ tea-svc      NodePort   172.30.28.31     <none>        8080:32257/TCP   38h
 [root@ocp-installer cafeone]#
 ```
 
-**Note:** Ports needs to match the BOG-IP Pools members
+**Note:** Ports needs to match the BIG-IP Pools members
 
 Deploy the Cafe Pods, Services using NodePort in **OpenShift-4-13**
 

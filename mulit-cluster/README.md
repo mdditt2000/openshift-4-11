@@ -52,20 +52,25 @@ Deploy CIS and RBAC for OpenShift 4-11 and OpenShift 4-13
 **OpenShift-4-11 Cluster**
 
 ```
+# oc create -f bigip-ctlr-clusterrole.yaml
 # oc create -f f5-bigip-ctlr-deployment.yaml
 deployment.apps/k8s-bigip-ctlr-deployment created
 ```
+CIS deployment [repo](https://github.com/mdditt2000/openshift-4-11/tree/main/mulit-cluster/openshift-4-11/cis)
 
-```
-oc create -f bigip-ctlr-clusterrole.yaml
-```
 **OpenShift-4-13 Cluster**
+
+Create RBAC for CIS. This RBAC is created in OpenShift-4-13
 
 ```
 # oc create -f external-cluster-rabc.yaml
 ```
 
+RBAC [repo](https://github.com/mdditt2000/openshift-4-11/blob/main/mulit-cluster/openshift-4-13/cis/external-cluster-rabc.yaml)
+
 #### Step 3 Deploy Cafe application in both Clusters
+
+Deploy the Cafe Pods, Services
 
 
 

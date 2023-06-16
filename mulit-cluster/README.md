@@ -70,8 +70,46 @@ RBAC [repo](https://github.com/mdditt2000/openshift-4-11/blob/main/mulit-cluster
 
 #### Step 3 Deploy Cafe application in both Clusters
 
-Deploy the Cafe Pods, Services
+Deploy the Cafe Pods, Services using NodePort in **OpenShift-4-11**
 
+Cafe App [repo](https://github.com/mdditt2000/openshift-4-11/tree/main/mulit-cluster/openshift-4-11/demo-app/cafeone)
 
+View Service in **OpenShift-4-11**
+
+```
+[root@ocp-installer cafeone]# oc get service -n cafeone
+NAME         TYPE       CLUSTER-IP       EXTERNAL-IP   PORT(S)          AGE
+coffee-svc   NodePort   172.30.62.25     <none>        8080:32318/TCP   38h
+mocha-svc    NodePort   172.30.142.252   <none>        8080:30347/TCP   38h
+tea-svc      NodePort   172.30.28.31     <none>        8080:32257/TCP   38h
+[root@ocp-installer cafeone]#
+```
+
+**Note:** Ports needs to match the BOG-IP Pools members
+
+Deploy the Cafe Pods, Services using NodePort in **OpenShift-4-13**
+
+Cafe App [repo](https://github.com/mdditt2000/openshift-4-13/tree/main/mulit-cluster/openshift-4-13/demo-app/cafeone)
+
+View Service in **OpenShift-4-13**
+
+```
+[root@ocp-installer cafeone]#  oc get service -n cafeone
+NAME         TYPE       CLUSTER-IP       EXTERNAL-IP   PORT(S)          AGE
+coffee-svc   NodePort   172.30.174.13    <none>        8080:31114/TCP   38h
+mocha-svc    NodePort   172.30.244.42    <none>        8080:30784/TCP   38h
+tea-svc      NodePort   172.30.114.100   <none>        8080:30549/TCP   38h
+
+```
 
 #### Step 3 Deploy OpenShift Route
+
+Create routes in **OpenShift-4-11**
+
+```
+[root@ocp-installer cafeone]# oc get route -n cafeone
+NAME               HOST/PORT                        PATH      SERVICES     PORT   TERMINATION   WILDCARD
+cafe-coffee-edge   cafeone.example.com ... 1 more   /coffee   coffee-svc   8080                 None
+cafe-mocha-edge    cafeone.example.com ... 1 more   /mocha    mocha-svc    8080                 None
+cafe-tea-edge      cafeone.example.com ... 1 more   /tea      tea-svc      8080                 None
+```

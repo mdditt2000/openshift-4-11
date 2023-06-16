@@ -1,6 +1,6 @@
 ## OpenShift Multi-Cluster
 
-This document demonstrates OpenShift Multi-Cluster using F5 BIG-IP. This document focuses on **standalone deployment** using **NodePort** Container Ingress Services (CIS) is only deployed in OpenShift 4.11 cluster as shown in the diagram
+This document demonstrates OpenShift Multi-Cluster using F5 BIG-IP. This document focuses on **standalone deployment** using **NodePort**. Container Ingress Services (CIS) is only deployed in OpenShift 4.11 cluster as shown in the diagram
 
 ![architecture](https://github.com/mdditt2000/openshift-4-11/blob/main/mulit-cluster/diagram/2023-06-14_15-14-41.png)
 
@@ -43,7 +43,7 @@ openshift-4-13             Opaque                                1      35h
 [root@ocp-installer route]#
 ```
 
-Note: Since CIS is only deployed in OpenShift-4-11, no need to share KubeConfig  with OpenShift-4-13
+**Note:** Since CIS is only deployed in OpenShift-4-11, no need to share KubeConfig  with OpenShift-4-13
 
 #### Step 2 Deploy CIS and RBAC
 

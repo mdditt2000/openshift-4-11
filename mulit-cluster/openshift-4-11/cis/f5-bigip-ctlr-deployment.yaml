@@ -44,7 +44,6 @@ spec:
               "--bigip-password=$(BIGIP_PASSWORD)",
               "--bigip-url=10.192.125.60",
               "--bigip-partition=OpenShift",
-              "--namespace=cafeone",
               "--route-label=systest",
               "--pool-member-type=nodeport",
               "--controller-mode=openshift",

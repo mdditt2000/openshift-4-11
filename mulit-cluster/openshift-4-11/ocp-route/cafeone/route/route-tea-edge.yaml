@@ -3,15 +3,15 @@ kind: Route
 metadata:
   annotations:
     virtual-server.f5.com/multiClusterServices: '[{"clusterName": "openshift-4-13", "svcName":
-          "coffee-svc", "namespace": "cafeone", "port": 8080 }]'
+          "tea-svc", "namespace": "cafeone", "port": 8080 }]'
     # you can define either service port or target port in the port value
   labels:
     f5type: systest
-  name: cafe-coffee-edge
+  name: cafe-tea-edge
   namespace: cafeone
 spec:
   host: cafeone.example.com
-  path: "/coffee"
+  path: "/tea"
   tls:
     certificate: |
       -----BEGIN CERTIFICATE-----
@@ -67,4 +67,4 @@ spec:
     targetPort: 8080
   to:
     kind: Service
-    name: coffee-svc
+    name: tea-svc

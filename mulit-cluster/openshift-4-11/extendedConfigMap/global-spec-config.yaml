@@ -8,8 +8,6 @@ metadata:
 data:
   extendedSpec: |
     multiClusterConfigs:
-    - clusterName: openshift-4-11
-      secret: default/openshift-4-11
     - clusterName: openshift-4-13
       secret: default/openshift-4-13
     extendedRouteSpec:
@@ -17,5 +15,3 @@ data:
       namespace: cafeone
       vserverAddr: 10.192.125.65
       vserverName: cafeone
-      allowOverride: true
-      policyCR: default/policy-cafe

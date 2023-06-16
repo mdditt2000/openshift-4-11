@@ -113,4 +113,4 @@ cafe-mocha-edge    cafeone.example.com ... 1 more   /mocha    mocha-svc    8080 
 cafe-tea-edge      cafeone.example.com ... 1 more   /tea      tea-svc      8080                 None
 ```
 
-Cafe Route [repo](https://github.com/mdditt2000/openshift-4-11/tree/main/mulit-cluster/openshift-4-11/ocp-route/cafeone/nonsecure)
+Cafe Routes [repo](https://github.com/mdditt2000/openshift-4-11/tree/main/mulit-cluster/openshift-4-11/ocp-route/cafeone/nonsecure)

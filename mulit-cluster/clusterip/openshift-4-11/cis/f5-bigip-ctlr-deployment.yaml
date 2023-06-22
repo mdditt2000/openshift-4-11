@@ -18,7 +18,7 @@ spec:
       # permissions
       containers:
         - name: k8s-bigip-ctlr
-          image: docker.io/nandakishoref5/k8s-bigip-ctlr:multiCluster_preview
+          image: quay.io/f5networks/k8s-bigip-ctlr-devel:56af3a41dce9420fedb4fd7a049055117c85754e
           imagePullPolicy: Always
           env:
             - name: BIGIP_USERNAME

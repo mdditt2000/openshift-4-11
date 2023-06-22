@@ -33,6 +33,7 @@ k8s.ovn.org/node-subnets: {"default":"10.128.2.0/23"}
 
 ### Get Node for OpenShift 4-13
 
+```
 [root@ocp-installer cis]# oc get nodes
 NAME                           STATUS   ROLES                  AGE   VERSION
 ocp-tpm-7rx67-master-0         Ready    control-plane,master   9d    v1.26.3+b404935
@@ -41,8 +42,10 @@ ocp-tpm-7rx67-master-2         Ready    control-plane,master   9d    v1.26.3+b40
 ocp-tpm-7rx67-worker-0-7n466   Ready    worker                 9d    v1.26.3+b404935
 ocp-tpm-7rx67-worker-0-ttwdj   Ready    worker                 9d    v1.26.3+b404935
 ocp-tpm-7rx67-worker-0-zrwmq   Ready    worker                 9d    v1.26.3+b404935
+```
 
 #### Workers
+
 ```
 # oc describe node cp-tpm-7rx67-worker-0-7n466 |grep "node-subnets\|node-primary-ifaddr"
 k8s.ovn.org/node-primary-ifaddr: {"ipv4":"10.192.125.187/24"}

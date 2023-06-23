@@ -2,7 +2,7 @@
 
 This document demonstrates OpenShift Multi-Cluster using F5 BIG-IP. This document focuses on **standalone deployment** using **ClusterIP**. Container Ingress Services (CIS) is only deployed in OpenShift 4.11 cluster as shown in the diagram
 
-![architecture](https://github.com/mdditt2000/openshift-4-11/blob/main/mulit-cluster/nodeport/diagram/2023-06-14_15-14-41.png)
+![architecture](https://github.com/mdditt2000/openshift-4-11/blob/main/mulit-cluster/clusterip/diagram/2023-06-14_15-14-41.png)
 
 ## Why OpenShift Multi-Cluster
 
@@ -11,6 +11,35 @@ My environment has two cluster as shown in the diagram above:
 * OpenShift 4.11
 * OpenShift 4.13
 * Similar Pods deployed in both cluster
+* Unique Pod Networks using OVNKubernetes
+
+**OpenShift-4-11 Cluster**
+```
+Spec:
+  Cluster Network:
+    Cidr:         10.128.0.0/14
+    Host Prefix:  23
+  External IP:
+    Policy:
+  Network Type:  OVNKubernetes
+  Service Network:
+    172.30.0.0/16
+```
+
+**OpenShift-4-13 Cluster**
+```
+Spec:
+  Cluster Network:
+    Cidr:         10.148.0.0/14
+    Host Prefix:  23
+  External IP:
+    Policy:
+  Network Type:  OVNKubernetes
+  Service Network:
+    172.30.0.0/16
+```
+
+node-subnets\|node-primary-ifaddr [reference](https://github.com/mdditt2000/openshift-4-11/tree/main/mulit-cluster/clusterip/openshift-4-11/cis)
 
 I would like to distribute traffic between the two cluster. While evaluating OpenShift 4.13 before upgrading/rebuilding OpenShift 4.11. Steps used to configure OpenShift multi-cluster using CIS **standalone deployment**. CIS configured in HA deployment will come next. 
 
@@ -56,7 +85,7 @@ Deploy CIS and RBAC for OpenShift 4-11 and OpenShift 4-13
 # oc create -f f5-bigip-ctlr-deployment.yaml
 deployment.apps/k8s-bigip-ctlr-deployment created
 ```
-CIS deployment [repo](hhttps://github.com/mdditt2000/openshift-4-11/tree/main/mulit-cluster/nodeport/openshift-4-11/cis)
+CIS deployment [repo](https://github.com/mdditt2000/openshift-4-11/tree/main/mulit-cluster/clusterip/openshift-4-11/cis)
 
 **OpenShift-4-13 Cluster**
 
@@ -66,39 +95,39 @@ Create RBAC for CIS. This RBAC is created in OpenShift-4-13
 # oc create -f external-cluster-rabc.yaml
 ```
 
-RBAC [repo](https://github.com/mdditt2000/openshift-4-11/blob/main/mulit-cluster/nodeport/openshift-4-13/cis/external-cluster-rabc.yaml)
+RBAC [repo](https://github.com/mdditt2000/openshift-4-11/blob/main/mulit-cluster/clusterip/openshift-4-13/cis/external-cluster-rabc.yaml)
 
 #### Step 3 Deploy Cafe application in both Clusters
 
 Deploy the Cafe Pods, Services using NodePort in **OpenShift-4-11**
 
-Cafe App [repo](https://github.com/mdditt2000/openshift-4-11/tree/main/mulit-cluster/nodeport/openshift-4-11/demo-app/cafeone)
+Cafe App [repo](https://github.com/mdditt2000/openshift-4-11/tree/main/mulit-cluster/clusterip/openshift-4-11/demo-app/cafeone)
 
 View Service in **OpenShift-4-11**
 
 ```
 [root@ocp-installer cafeone]# oc get service -n cafeone
-NAME         TYPE       CLUSTER-IP       EXTERNAL-IP   PORT(S)          AGE
-coffee-svc   NodePort   172.30.62.25     <none>        8080:32318/TCP   38h
-mocha-svc    NodePort   172.30.142.252   <none>        8080:30347/TCP   38h
-tea-svc      NodePort   172.30.28.31     <none>        8080:32257/TCP   38h
-[root@ocp-installer cafeone]#
+NAME         TYPE        CLUSTER-IP       EXTERNAL-IP   PORT(S)    AGE
+coffee-svc   ClusterIP   172.30.223.248   <none>        8080/TCP   26h
+mocha-svc    ClusterIP   172.30.110.9     <none>        8080/TCP   26h
+tea-svc      ClusterIP   172.30.50.211    <none>        8080/TCP   26h
 ```
 
 **Note:** Ports needs to match the BIG-IP Pools members
 
 Deploy the Cafe Pods, Services using NodePort in **OpenShift-4-13**
 
-Cafe App [repo](https://github.com/mdditt2000/openshift-4-11/tree/main/mulit-cluster/nodeport/openshift-4-13/demo-app/cafeone)
+Cafe App [repo](https://github.com/mdditt2000/openshift-4-11/tree/main/mulit-cluster/clusterip/openshift-4-13/demo-app/cafeone)
 
 View Service in **OpenShift-4-13**
 
 ```
 [root@ocp-installer cafeone]#  oc get service -n cafeone
-NAME         TYPE       CLUSTER-IP       EXTERNAL-IP   PORT(S)          AGE
-coffee-svc   NodePort   172.30.174.13    <none>        8080:31114/TCP   38h
-mocha-svc    NodePort   172.30.244.42    <none>        8080:30784/TCP   38h
-tea-svc      NodePort   172.30.114.100   <none>        8080:30549/TCP   38h
+[root@ocp-installer openshift-4-13]# oc get service -n cafeone
+NAME         TYPE        CLUSTER-IP       EXTERNAL-IP   PORT(S)    AGE
+coffee-svc   ClusterIP   172.30.240.56    <none>        8080/TCP   42m
+mocha-svc    ClusterIP   172.30.169.113   <none>        8080/TCP   42m
+tea-svc      ClusterIP   172.30.8.131     <none>        8080/TCP   42m
 ```
 
 #### Step 3 Deploy OpenShift Route
@@ -113,4 +142,4 @@ cafe-mocha-edge    cafeone.example.com ... 1 more   /mocha    mocha-svc    8080 
 cafe-tea-edge      cafeone.example.com ... 1 more   /tea      tea-svc      8080                 None
 ```
 
-Cafe Routes [repo](https://github.com/mdditt2000/openshift-4-11/tree/main/mulit-cluster/nodeport/openshift-4-11/ocp-route/cafeone/nonsecure)
+Cafe Routes [repo](https://github.com/mdditt2000/openshift-4-11/tree/main/mulit-cluster/clusterip/openshift-4-11/ocp-route/cafeone/nonsecure)

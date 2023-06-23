@@ -39,7 +39,7 @@ Spec:
     172.30.0.0/16
 ```
 
-node-subnets\|node-primary-ifaddr [reference](https://github.com/mdditt2000/openshift-4-11/tree/main/mulit-cluster/clusterip/openshift-4-11/cis)
+node-subnets\|node-primary-ifaddr [reference](https://github.com/mdditt2000/openshift-4-11/blob/main/mulit-cluster/clusterip/openshift-4-11/node.md)
 
 I would like to distribute traffic between the two cluster. While evaluating OpenShift 4.13 before upgrading/rebuilding OpenShift 4.11. Steps used to configure OpenShift multi-cluster using CIS **standalone deployment**. CIS configured in HA deployment will come next. 
 
@@ -143,3 +143,7 @@ cafe-tea-edge      cafeone.example.com ... 1 more   /tea      tea-svc      8080 
 ```
 
 Cafe Routes [repo](https://github.com/mdditt2000/openshift-4-11/tree/main/mulit-cluster/clusterip/openshift-4-11/ocp-route/cafeone/nonsecure)
+
+BIG-IP Pools members show the Pods from both **OpenShift-4-11** and **OpenShift-4-13**
+
+![pods](https://github.com/mdditt2000/openshift-4-11/blob/main/mulit-cluster/clusterip/diagram/2023-06-14_15-14-41.png)

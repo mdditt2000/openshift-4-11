@@ -146,4 +146,4 @@ Cafe Routes [repo](https://github.com/mdditt2000/openshift-4-11/tree/main/mulit-
 
 BIG-IP Pools members show the Pods from both **OpenShift-4-11** and **OpenShift-4-13**
 
-![pods](https://github.com/mdditt2000/openshift-4-11/blob/main/mulit-cluster/clusterip/diagram/2023-06-14_15-14-41.png)
+![pods](https://github.com/mdditt2000/openshift-4-11/blob/main/mulit-cluster/clusterip/diagram/2023-06-22_16-52-50.png)

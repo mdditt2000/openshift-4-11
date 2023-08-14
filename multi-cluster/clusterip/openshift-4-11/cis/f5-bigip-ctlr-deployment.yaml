@@ -46,6 +46,7 @@ spec:
               "--bigip-partition=OpenShift",
               "--namespace=default",
               "--namespace=cafeone",
+              "--namespace=nginx-ingress",
               "--route-label=systest",
               "--pool-member-type=cluster",
               "--controller-mode=openshift",

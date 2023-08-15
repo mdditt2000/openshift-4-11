@@ -15,6 +15,7 @@ spec:
     targetPort: 443
   tls:
     termination: passthrough
+    insecureEdgeTerminationPolicy: Redirect
   to:
     kind: Service
     name: nginxingress-sample-nginx-ingress-controller

@@ -1,8 +1,8 @@
-## OpenShift Multi-Cluster
+## Multi-Cluster NGINX
 
-This document demonstrates OpenShift Multi-Cluster using F5 BIG-IP. This document focuses on **standalone deployment** using **ClusterIP**. Container Ingress Services (CIS) is only deployed in OpenShift 4.11 cluster as shown in the diagram
+This document demonstrates Multi-Cluster NGINX using F5 BIG-IP. This document focuses on **standalone deployment** using **ClusterIP**. Container Ingress Services (CIS) is only deployed in OpenShift 4.11 cluster as shown in the diagram
 
-![architecture](https://github.com/mdditt2000/openshift-4-11/blob/main/mulit-cluster/clusterip/diagram/2023-06-14_15-14-41.png)
+![architecture](https://github.com/mdditt2000/openshift-4-11/blob/main/multi-cluster-nginx/diagram/2023-08-16_11-51-42.png)
 
 ## Why OpenShift Multi-Cluster
 

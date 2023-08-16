@@ -1,4 +1,6 @@
-## Multi-Cluster NGINX
+## OpenShift Ingress in a Multi-Cluster World with NGINX + BIG-IP
+
+ The deployment and management of OpenShift is considered one of the most daunting challenges organizations face when deploying modern apps with exceptional customer experiences. This document demonstrates about how NGINX Ingress Controller can help scale, secure, and provide visibility into OpenShift in production in a multi-cluster world.
 
 This document demonstrates Multi-Cluster NGINX using F5 BIG-IP. This document focuses on **standalone deployment** using **ClusterIP**. Container Ingress Services (CIS) is only deployed in OpenShift 4.11 cluster as shown in the diagram
 
@@ -10,7 +12,7 @@ My environment has two cluster as shown in the diagram above:
 
 * OpenShift 4.11
 * OpenShift 4.13
-* Similar Pods deployed in both cluster
+* Similar Pods deployed in both cluster load-balanced by NGINX 
 * Unique Pod Networks using OVNKubernetes
 
 **OpenShift-4-11 Cluster**

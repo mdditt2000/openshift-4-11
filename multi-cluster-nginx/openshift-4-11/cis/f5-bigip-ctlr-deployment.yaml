@@ -50,6 +50,7 @@ spec:
               "--route-label=systest",
               "--pool-member-type=cluster",
               "--controller-mode=openshift",
+              "--multi-cluster-mode=standalone"
               # "--static-routing-mode=true",
               # "--orchestration-cni=ovn-k8s",
               "--route-spec-configmap=kube-system/global-spec-config",

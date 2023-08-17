@@ -139,4 +139,4 @@ Cafe Routes [repo](https://github.com/mdditt2000/openshift-4-11/blob/main/multi-
 
 BIG-IP Pools members show the Pods from both **OpenShift-4-11** and **OpenShift-4-13**
 
-![pods]()
+![pods](https://github.com/mdditt2000/openshift-4-11/blob/main/multi-cluster-nginx/diagram/2023-08-17_09-23-05.png)

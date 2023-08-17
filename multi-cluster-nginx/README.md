@@ -5,7 +5,7 @@ This document demonstrates how **NGINX Ingress Controller** can help scale, secu
 ![architecture](https://github.com/mdditt2000/openshift-4-11/blob/main/multi-cluster-nginx/diagram/2023-08-16_11-51-42.png)
 
 
-YouTube Demo [YouTube Demo]()
+YouTube [Demo]()
 
 ## Why OpenShift Multi-Cluster
 

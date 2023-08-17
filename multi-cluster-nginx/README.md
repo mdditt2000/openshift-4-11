@@ -1,6 +1,6 @@
 ## OpenShift Ingress in a Multi-Cluster World with NGINX + BIG-IP
 
-This document demonstrates how **NGINX Ingress Controller** can help scale, secure, and provide visibility into OpenShift in a multi-cluster world. The YouTube demo demonstrates OpenShift Multi-Cluster NGINX using F5 BIG-IP and Container Ingress Services (CIS). This document focuses on **standalone deployment** using **ClusterIP**. CIS is only deployed in OpenShift 4.11 cluster as shown in the diagram. However CIS can also be deployed in multi-cluster using **active/standby** or **active/active**. This will be covered in another demo
+This document demonstrates how **NGINX Ingress Controller** can help scale, secure, and provide visibility into OpenShift in a **multi-cluster world**. The YouTube demo demonstrates OpenShift Multi-Cluster using F5 BIG-IP and Container Ingress Services (CIS) and . This document focuses on **standalone deployment** using **ClusterIP**. CIS is only deployed in OpenShift 4.11 cluster as shown in the diagram. However CIS can also be deployed in multi-cluster using **active/standby** or **active/active**. This will be covered in another demo
 
 ![architecture](https://github.com/mdditt2000/openshift-4-11/blob/main/multi-cluster-nginx/diagram/2023-08-16_11-51-42.png)
 

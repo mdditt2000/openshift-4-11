@@ -1,8 +1,8 @@
 ## OpenShift Ingress in a Multi-Cluster World with NGINX + BIG-IP
 
- The deployment and management of OpenShift is considered one of the most daunting challenges organizations face when deploying modern apps with exceptional customer experiences. This document demonstrates about how NGINX Ingress Controller can help scale, secure, and provide visibility into OpenShift in production in a multi-cluster world.
+This document demonstrates how NGINX Ingress Controller can help scale, secure, and provide visibility into OpenShift in a multi-cluster world.
 
-This document demonstrates Multi-Cluster NGINX using F5 BIG-IP. This document focuses on **standalone deployment** using **ClusterIP**. Container Ingress Services (CIS) is only deployed in OpenShift 4.11 cluster as shown in the diagram
+This demo demonstrates OpenShift Multi-Cluster NGINX using F5 BIG-IP and Container Ingress Services (CIS). This document focuses on **standalone deployment** using **ClusterIP**. CIS is only deployed in OpenShift 4.11 cluster as shown in the diagram. However CIS can also be deployed in multi-cluster using **active/standby** or **active/active**. This will be covered in another demo
 
 ![architecture](https://github.com/mdditt2000/openshift-4-11/blob/main/multi-cluster-nginx/diagram/2023-08-16_11-51-42.png)
 
@@ -12,7 +12,7 @@ My environment has two cluster as shown in the diagram above:
 
 * OpenShift 4.11
 * OpenShift 4.13
-* Similar Pods deployed in both cluster load-balanced by NGINX 
+* Similar Pods deployed in both cluster load-balanced by NGINX Ingress Controller
 * Unique Pod Networks using OVNKubernetes
 
 **OpenShift-4-11 Cluster**
@@ -41,9 +41,7 @@ Spec:
     172.30.0.0/16
 ```
 
-node-subnets\|node-primary-ifaddr [list](https://github.com/mdditt2000/openshift-4-11/blob/main/mulit-cluster/clusterip/openshift-4-11/node.md)
-
-I would like to distribute traffic between the two cluster. While evaluating OpenShift 4.13 before upgrading/rebuilding OpenShift 4.11. Steps used to configure OpenShift multi-cluster using CIS **standalone deployment**. CIS configured in HA deployment will come next. 
+I would like to distribute traffic between the two cluster. While evaluating OpenShift 4.13 before upgrading/rebuilding OpenShift 4.11. Steps used to configure OpenShift multi-cluster using CIS **standalone deployment**.
 
 #### Step 1 Fetch KubeConfigs from OpenShift-4-13 Cluster
 
@@ -87,7 +85,7 @@ Deploy CIS and RBAC for OpenShift 4-11 and OpenShift 4-13
 # oc create -f f5-bigip-ctlr-deployment.yaml
 deployment.apps/k8s-bigip-ctlr-deployment created
 ```
-CIS deployment [repo](https://github.com/mdditt2000/openshift-4-11/tree/main/mulit-cluster/clusterip/openshift-4-11/cis)
+CIS deployment [repo](https://github.com/mdditt2000/openshift-4-11/blob/main/multi-cluster-nginx/openshift-4-11/cis/f5-bigip-ctlr-deployment.yaml)
 
 **OpenShift-4-13 Cluster**
 
@@ -97,55 +95,48 @@ Create RBAC for CIS. This RBAC is created in OpenShift-4-13
 # oc create -f external-cluster-rabc.yaml
 ```
 
-RBAC [repo](https://github.com/mdditt2000/openshift-4-11/blob/main/mulit-cluster/clusterip/openshift-4-13/cis/external-cluster-rabc.yaml)
+RBAC [repo](https://github.com/mdditt2000/openshift-4-11/blob/main/multi-cluster-nginx/openshift-4-13/cis/external-cluster-rabc.yaml)
 
-#### Step 3 Deploy Cafe application in both Clusters
+#### Step 3 Deploy NGINX-Ingress in both Clusters
 
-Deploy the Cafe Pods, Services using NodePort in **OpenShift-4-11**
+Deploy the NGINX-Ingress in **OpenShift-4-11** for ClusterIP
 
-Cafe App [repo](https://github.com/mdditt2000/openshift-4-11/tree/main/mulit-cluster/clusterip/openshift-4-11/demo-app/cafeone)
+Getting Started [repo](https://github.com/nginxinc/nginx-ingress-helm-operator#getting-started)
 
-View Service in **OpenShift-4-11**
-
-```
-[root@ocp-installer cafeone]# oc get service -n cafeone
-NAME         TYPE        CLUSTER-IP       EXTERNAL-IP   PORT(S)    AGE
-coffee-svc   ClusterIP   172.30.223.248   <none>        8080/TCP   26h
-mocha-svc    ClusterIP   172.30.110.9     <none>        8080/TCP   26h
-tea-svc      ClusterIP   172.30.50.211    <none>        8080/TCP   26h
-```
-
-**Note:** Ports needs to match the BIG-IP Pools members
-
-Deploy the Cafe Pods, Services using NodePort in **OpenShift-4-13**
-
-Cafe App [repo](https://github.com/mdditt2000/openshift-4-11/tree/main/mulit-cluster/clusterip/openshift-4-13/demo-app/cafeone)
-
-View Service in **OpenShift-4-13**
+View Service in **OpenShift-4-11** for NGINX-Ingress
 
 ```
-[root@ocp-installer cafeone]#  oc get service -n cafeone
-[root@ocp-installer openshift-4-13]# oc get service -n cafeone
-NAME         TYPE        CLUSTER-IP       EXTERNAL-IP   PORT(S)    AGE
-coffee-svc   ClusterIP   172.30.240.56    <none>        8080/TCP   42m
-mocha-svc    ClusterIP   172.30.169.113   <none>        8080/TCP   42m
-tea-svc      ClusterIP   172.30.8.131     <none>        8080/TCP   42m
+# oc get service -n nginx-ingress
+NAME                                                        TYPE        CLUSTER-IP      EXTERNAL-IP   PORT(S)          AGE
+nginx-ingress-operator-controller-manager-metrics-service   ClusterIP   172.30.209.54   <none>        8443/TCP         4d23h
+nginxingress-sample-nginx-ingress-controller                ClusterIP   172.30.69.213   <none>        80/TCP,443/TCP   4d22h
 ```
 
-#### Step 3 Deploy OpenShift Route
+Deploy the NGINX-Ingress in **OpenShift-4-13** for ClusterIP
+
+Getting Started [repo](https://github.com/nginxinc/nginx-ingress-helm-operator#getting-started)
+
+View Service in **OpenShift-4-13** for NGINX-Ingress
+
+```
+# oc get service -n nginx-ingress
+NAME                                                        TYPE        CLUSTER-IP      EXTERNAL-IP   PORT(S)          AGE
+nginx-ingress-operator-controller-manager-metrics-service   ClusterIP   172.30.209.54   <none>        8443/TCP         4d23h
+nginxingress-sample-nginx-ingress-controller                ClusterIP   172.30.69.213   <none>        80/TCP,443/TCP   4d22h
+```
+
+#### Step 3 Deploy OpenShift Route for NGINX-Ingress traffic
 
 Create routes in **OpenShift-4-11**
 
 ```
-[root@ocp-installer cafeone]# oc get route -n cafeone
-NAME               HOST/PORT                        PATH      SERVICES     PORT   TERMINATION   WILDCARD
-cafe-coffee-edge   cafeone.example.com ... 1 more   /coffee   coffee-svc   8080                 None
-cafe-mocha-edge    cafeone.example.com ... 1 more   /mocha    mocha-svc    8080                 None
-cafe-tea-edge      cafeone.example.com ... 1 more   /tea      tea-svc      8080                 None
+[root@ocp-installer openshift-4-11]# oc get route -n nginx-ingress
+NAME                      HOST/PORT                     PATH   SERVICES                                       PORT   TERMINATION            WILDCARD
+nginx-ingress-route-443   cafe.example.com ... 1 more          nginxingress-sample-nginx-ingress-controller   443    passthrough/Redirect   None
 ```
 
-Cafe Routes [repo](https://github.com/mdditt2000/openshift-4-11/tree/main/mulit-cluster/clusterip/openshift-4-11/ocp-route/cafeone/nonsecure)
+Cafe Routes [repo](https://github.com/mdditt2000/openshift-4-11/blob/main/multi-cluster-nginx/openshift-4-11/ocp-route/nginx-ingress/nginx-ingress-route-443.yaml)
 
 BIG-IP Pools members show the Pods from both **OpenShift-4-11** and **OpenShift-4-13**
 
-![pods](https://github.com/mdditt2000/openshift-4-11/blob/main/mulit-cluster/clusterip/diagram/2023-06-22_16-52-50.png)
+![pods]()

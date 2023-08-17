@@ -98,9 +98,9 @@ Create RBAC for CIS. This RBAC is created in OpenShift-4-13
 
 RBAC [repo](https://github.com/mdditt2000/openshift-4-11/blob/main/multi-cluster-nginx/openshift-4-13/cis/external-cluster-rabc.yaml)
 
-#### Step 3 Deploy NGINX-Ingress in both Clusters
+#### Step 3 Deploy NGINX Ingress Controller in both Clusters
 
-Deploy the NGINX-Ingress in **OpenShift-4-11** for ClusterIP
+Deploy the NGINX Ingress Controller in **OpenShift-4-11** for ClusterIP
 
 Getting Started [repo](https://github.com/nginxinc/nginx-ingress-helm-operator#getting-started)
 
@@ -113,7 +113,7 @@ nginx-ingress-operator-controller-manager-metrics-service   ClusterIP   172.30.2
 nginxingress-sample-nginx-ingress-controller                ClusterIP   172.30.69.213   <none>        80/TCP,443/TCP   4d22h
 ```
 
-Deploy the NGINX-Ingress in **OpenShift-4-13** for ClusterIP
+Deploy the NGINX Ingress Controller in **OpenShift-4-13** for ClusterIP
 
 Getting Started [repo](https://github.com/nginxinc/nginx-ingress-helm-operator#getting-started)
 
